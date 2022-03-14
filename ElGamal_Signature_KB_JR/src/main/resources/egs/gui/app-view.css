@@ -6,6 +6,7 @@
 
 .mainElement {
     -fx-background-color: linear-gradient(to left, rgba(48,38,29,1) 0%, rgba(47,28,62,1) 100%);
+    -fx-background-radius: 10px;
 }
 
 /*.label {*/
@@ -28,7 +29,7 @@
     -fx-font-size: 14px;
     /*-fx-border-color: white;*/
     /*-fx-border-width: 0px 0px 0px 0px;*/
-    -fx-background-radius: 5px 5px 0px 0px;
+    -fx-background-radius: 10px 10px 0px 0px;
 }
 
 .labelRight {
@@ -40,7 +41,7 @@
     -fx-background-color: linear-gradient(to left, #2288ff55, #0000ff44 70%, #00ffff11);
     /*-fx-border-color: white;*/
     /*-fx-border-width: 0px 0px 0px 0px;*/
-    -fx-background-radius: 5px 5px 0px 0px;
+    -fx-background-radius: 10px 10px 0px 0px;
 }
 
 .labelSimple {
@@ -55,6 +56,15 @@
     -fx-text-fill: white;
     /*-fx-border-radius: 5px;*/
     -fx-background-radius: 5px;
+    -fx-font-size: 12px;
+}
+
+.text-field:focused, .text-area:focused {
+    -fx-background-color: #ffffff44;
+}
+
+.text-field:hover, .text-area:hover {
+    -fx-background-color: #ffffff44;
 }
 
 .button {
@@ -73,6 +83,18 @@
     -fx-background-color: #ffffff55;
 }
 
+.titleButton {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-background-radius: 50%;
+    -fx-font-size: 16px;
+    -fx-font-family: System;
+}
+
+.titleButton:hover {
+    -fx-background-color: #ffffff55;
+}
+
 .bottomGrid Line {
     -fx-stroke: red;
     -fx-padding: 1px;
@@ -81,8 +103,38 @@
 .borderBox {
     /*-fx-border-color: white;*/
     /*-fx-border-radius: 5px;*/
-    -fx-background-radius: 5px;
+    -fx-background-radius: 10px;
     -fx-background-color: #ffffff11;
+}
+
+.paneBox {
+    -fx-background-color: #ffffff11;
+    -fx-background-radius: 0px 0px 10px 10px;
+}
+
+.titled-pane {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.titled-pane > *.content{
+    -fx-background-color: transparent ;
+    -fx-border-color: transparent;
+}
+
+.titled-pane > stack-pane {
+    -fx-background-color: transparent ;
+}
+
+.titled-pane > .title {
+    -fx-background-color: linear-gradient(to left, rgba(255,141,0,0.8) 0%, rgba(123,0,255,0.8) 100%);
+    -fx-background-radius: 10px 10px 0px 0px;
+    -fx-font-family: System;
+    -fx-font-size: 14px;
+}
+
+.titled-pane > .title > .arrow-button .arrow {
+    -fx-background-color: white;
 }
 
 .text-area .scroll-pane {

@@ -6,146 +6,23 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="550.0" prefWidth="800.0" spacing="6.0" styleClass="mainElement" stylesheets="@app-view.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="egs.gui.EgsController">
+<VBox fx:id="mainElement" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="800.0" spacing="6.0" styleClass="mainElement" stylesheets="@app-view.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="egs.gui.EgsController">
    <children>
-      <AnchorPane minHeight="-Infinity" prefHeight="242.0" prefWidth="779.0" styleClass="borderBox">
+      <HBox fx:id="titleBar" alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" prefWidth="779.0" VBox.vgrow="NEVER">
          <children>
-            <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="25.0" styleClass="labelLeft" text="Klucze" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="20.0" prefWidth="147.0" style="-fx-font-size: 16px;" styleClass="labelSimple" text="ElGamal Signature App" HBox.hgrow="ALWAYS" />
+            <Button alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onMinimizeClicked" prefHeight="32.0" prefWidth="32.0" styleClass="titleButton" text="_" textAlignment="CENTER">
                <font>
-                  <Font name="Verdana" size="14.0" />
-               </font></Label>
-            <VBox layoutX="3.0" layoutY="26.0" prefHeight="190.0" prefWidth="777.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="33.0">
-               <children>
-                  <HBox alignment="CENTER" layoutX="10.0" layoutY="49.0" prefHeight="3.0" prefWidth="600.0">
-                     <children>
-                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="Klucz publiczny g:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <TextField maxWidth="1.7976931348623157E308" prefHeight="37.0" prefWidth="900.0" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                        </TextField>
-                     </children>
-                     <VBox.margin>
-                        <Insets top="5.0" />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER" prefHeight="3.0" prefWidth="600.0">
-                     <children>
-                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="Klucz publiczny h:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <TextField maxWidth="1.7976931348623157E308" prefHeight="37.0" prefWidth="900.0" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                        </TextField>
-                     </children>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER" prefHeight="3.0" prefWidth="600.0">
-                     <children>
-                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="Klucz prywatny a:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <TextField maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="613.0" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                        </TextField>
-                     </children>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox alignment="CENTER" prefHeight="3.0" prefWidth="600.0">
-                     <children>
-                        <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="Mod N:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <TextField maxWidth="1.7976931348623157E308" prefHeight="54.0" prefWidth="900.0" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                        </TextField>
-                     </children>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox maxWidth="1.7976931348623157E308" prefHeight="33.0" prefWidth="792.0" spacing="10.0">
-                     <children>
-                        <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" text="Wygeneruj klucze">
-                           <HBox.margin>
-                              <Insets left="-1.0" />
-                           </HBox.margin>
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="testButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onTestButtonClick" prefHeight="30.0" prefWidth="70.0" text="Wczytaj">
-                           <HBox.margin>
-                              <Insets left="-1.0" />
-                           </HBox.margin>
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                           </Button>
-                        <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="70.0" text="Zapisz">
-                           <HBox.margin>
-                              <Insets left="-1.0" />
-                           </HBox.margin>
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Button>
-                        <Label maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="506.0" styleClass="labelPath" text="/path/to/file/that/is/really/long/xd" HBox.hgrow="ALWAYS">
-                           <HBox.margin>
-                              <Insets />
-                           </HBox.margin>
-                           <padding>
-                              <Insets left="5.0" />
-                           </padding>
-                           <font>
-                              <Font name="Consolas" size="13.0" />
-                           </font>
-                        </Label>
-                     </children>
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                     </HBox>
-               </children>
-            </VBox>
+                  <Font name="Blackadder ITC" size="23.0" />
+               </font></Button>
+            <Button alignment="CENTER_RIGHT" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onMaximizeClicked" prefHeight="32.0" prefWidth="32.0" styleClass="titleButton" text="+" textAlignment="CENTER" />
+            <Button alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onExitClicked" prefHeight="32.0" prefWidth="32.0" styleClass="titleButton" text="x" textAlignment="CENTER" />
          </children>
-      </AnchorPane>
-      <GridPane alignment="CENTER" hgap="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="337.0" prefWidth="790.0" snapToPixel="false" styleClass="bottomGrid" vgap="10.0" VBox.vgrow="ALWAYS">
+         <padding>
+            <Insets top="7.0" />
+         </padding>
+      </HBox>
+      <GridPane alignment="CENTER" hgap="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="354.0" prefWidth="779.0" snapToPixel="false" styleClass="bottomGrid" vgap="10.0" VBox.vgrow="ALWAYS">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -162,7 +39,7 @@
                   <Insets right="50.0" />
                </GridPane.margin>
                <children>
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="25.0" style="-fx-border-width: 0px 0px 1px 0px;" styleClass="labelLeft" text="Tekst jawny" textAlignment="CENTER">
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" style="-fx-border-width: 0px 0px 1px 0px;" styleClass="labelLeft" text="Tekst jawny" textAlignment="CENTER">
                      <font>
                         <Font size="14.0" />
                      </font></Label>
@@ -208,7 +85,7 @@
                   <Insets left="50.0" />
                </GridPane.margin>
                <children>
-                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="25.0" style="-fx-border-width: 0px 0px 1px 0px;" styleClass="labelLeft" text="Podpis cyfrowy" textAlignment="CENTER" />
+                  <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" style="-fx-border-width: 0px 0px 1px 0px;" styleClass="labelLeft" text="Podpis cyfrowy" textAlignment="CENTER" />
                   <TextArea maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="261.0" VBox.vgrow="ALWAYS">
                      <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -245,7 +122,7 @@
             </VBox>
             <VBox alignment="CENTER" fillWidth="false" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="0.0" spacing="10.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                <children>
-                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="94.0" text=" Podpisz -&gt;">
+                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="94.0" text=" Podpisz →">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -253,7 +130,7 @@
                         <Font size="13.0" />
                      </font>
                   </Button>
-                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="94.0" text="&lt;- Zweryfikuj">
+                  <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="94.0" text="← Zweryfikuj">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -270,8 +147,148 @@
             <Insets top="5.0" />
          </VBox.margin>
       </GridPane>
+      <TitledPane alignment="CENTER" maxHeight="-Infinity" text="Klucze" textAlignment="CENTER">
+         <content>
+            <AnchorPane minHeight="-Infinity" prefHeight="219.0" prefWidth="778.0" styleClass="paneBox">
+               <children>
+                  <VBox layoutX="14.0" prefHeight="188.0" prefWidth="761.0" spacing="10.0" AnchorPane.bottomAnchor="76.79999999999995" AnchorPane.leftAnchor="-12.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <HBox alignment="CENTER" layoutX="10.0" layoutY="49.0" prefHeight="3.0" prefWidth="600.0">
+                           <children>
+                              <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="Klucz publiczny g:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <TextField maxWidth="1.7976931348623157E308" prefHeight="37.0" prefWidth="900.0" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets top="5.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="3.0" prefWidth="600.0">
+                           <children>
+                              <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="Klucz publiczny h:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <TextField maxWidth="1.7976931348623157E308" prefHeight="37.0" prefWidth="900.0" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="3.0" prefWidth="600.0">
+                           <children>
+                              <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="Klucz prywatny a:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <TextField maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="613.0" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="3.0" prefWidth="600.0">
+                           <children>
+                              <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="Mod N:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                              <TextField maxWidth="1.7976931348623157E308" prefHeight="54.0" prefWidth="900.0" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox maxWidth="1.7976931348623157E308" prefHeight="33.0" prefWidth="792.0" spacing="10.0">
+                           <children>
+                              <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" text="Wygeneruj klucze">
+                                 <HBox.margin>
+                                    <Insets left="-1.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="testButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onTestButtonClick" prefHeight="30.0" prefWidth="70.0" text="Wczytaj">
+                                 <HBox.margin>
+                                    <Insets left="-1.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                                 </Button>
+                              <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="70.0" text="Zapisz">
+                                 <HBox.margin>
+                                    <Insets left="-1.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Button>
+                              <Label maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="506.0" styleClass="labelPath" text="/path/to/file/that/is/really/long/xd" HBox.hgrow="ALWAYS">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets left="5.0" />
+                                 </padding>
+                                 <font>
+                                    <Font name="Consolas" size="13.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                           </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </content>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </TitledPane>
    </children>
    <padding>
-      <Insets bottom="4.0" left="10.0" right="10.0" top="10.0" />
+      <Insets bottom="10.0" left="10.0" right="10.0" />
    </padding>
 </VBox>
