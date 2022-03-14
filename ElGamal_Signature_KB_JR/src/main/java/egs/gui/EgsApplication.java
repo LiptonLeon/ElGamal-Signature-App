@@ -10,7 +10,7 @@ import java.io.IOException;
 public class EgsApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(EgsApplication.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(EgsApplication.class.getResource("app-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("ElGamal Signature App");
         stage.setScene(scene);
