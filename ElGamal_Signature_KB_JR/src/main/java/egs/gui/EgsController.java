@@ -12,16 +12,10 @@ public class EgsController {
 
     private Stage stage;
 
+    // FXResizeHelper can be initialized after passing stage to controller
     public void setStage(Stage stage) {
         this.stage = stage;
         new FXResizeHelper(stage, 15, 15);
-    }
-
-    @FXML
-    protected void onTestButtonClick() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
-        fileChooser.showSaveDialog(testButton.getScene().getWindow());
     }
 
     @FXML

@@ -1,60 +1,38 @@
-.label {
-    -fx-text-fill: white;
-    -fx-font-family: System;
-    -fx-font-size: 13px;
-}
+/* Root node */
 
 .mainElement {
     -fx-background-color: linear-gradient(to left, rgba(48,38,29,1) 0%, rgba(47,28,62,1) 100%);
     -fx-background-radius: 10px;
 }
 
-/*.label {*/
-/*    -fx-font-family: "System";*/
-/*}*/
+/* Labels */
+
+.label {
+    -fx-text-fill: white;
+    -fx-font-family: System;
+    -fx-font-size: 13px;
+}
 
 .labelPath {
     -fx-font-size: 12px;
-}
-
-.labelLeft {
-    /*-fx-font-size: 14;*/
-    -fx-text-fill: #ffffff;
-    /*-fx-border-color: gray;*/
-    /*-fx-border-width: 2px 2px 2px 0px;*/
-    /*-fx-border-radius: 0px 5px 5px 0px;*/
-    /*-fx-background-radius: 0px 10px 10px 0px;*/
-    /*-fx-background-color: linear-gradient(to right, #FFFFFF22 80%, #FFFFFF11);*/
-    -fx-background-color: linear-gradient(to left, rgba(255,141,0,0.8) 0%, rgba(123,0,255,0.8) 100%);
-    -fx-font-size: 14px;
-    /*-fx-border-color: white;*/
-    /*-fx-border-width: 0px 0px 0px 0px;*/
-    -fx-background-radius: 10px 10px 0px 0px;
-}
-
-.labelRight {
-    -fx-text-fill: white;
-    /*-fx-border-color: gray;*/
-    /*-fx-border-width: 2px 0px 2px 2px;*/
-    /*-fx-border-radius: 5px 0px 0px 5px;*/
-    /*-fx-background-radius: 5px 0px 0px 5px;*/
-    -fx-background-color: linear-gradient(to left, #2288ff55, #0000ff44 70%, #00ffff11);
-    /*-fx-border-color: white;*/
-    /*-fx-border-width: 0px 0px 0px 0px;*/
-    -fx-background-radius: 10px 10px 0px 0px;
 }
 
 .labelSimple {
     -fx-text-fill: white;
 }
 
+.labelGradient {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: linear-gradient(to left, rgba(255,141,0,0.8) 0%, rgba(123,0,255,0.8) 100%);
+    -fx-font-size: 14px;
+    -fx-background-radius: 10px 10px 0px 0px;
+}
+
+/* TextField and TextArea */
+
 .text-field, .text-area{
-    /*-fx-background-color: linear-gradient(to top, #FFFFFF55, #FFFFFF44 80%, #FFFFFF55);*/
-    /*-fx-background-radius: 5px 0px 0px 5px;*/
     -fx-background-color: #ffffff22;
-    /*-fx-border-color: white;*/
     -fx-text-fill: white;
-    /*-fx-border-radius: 5px;*/
     -fx-background-radius: 5px;
     -fx-font-size: 12px;
 }
@@ -67,13 +45,30 @@
     -fx-background-color: #ffffff44;
 }
 
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical, .scroll-bar:horizontal, .corner {
+    -fx-background-color: transparent;
+}
+.text-area .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+/* Buttons */
+
 .button {
-    /*-fx-background-radius: 7px 7px 7px 7px;*/
-    /*-fx-border-color: white;*/
     -fx-text-fill: white;
     -fx-background-color: #ffffff22;
-    /*-fx-background-color: #1177FF;*/
-    /*-fx-border-radius: 5px;*/
     -fx-background-radius: 5px;
     -fx-font-size: 13px;
     -fx-font-family: System;
@@ -95,14 +90,9 @@
     -fx-background-color: #ffffff55;
 }
 
-.bottomGrid Line {
-    -fx-stroke: red;
-    -fx-padding: 1px;
-}
+/* File boxes and key box */
 
 .borderBox {
-    /*-fx-border-color: white;*/
-    /*-fx-border-radius: 5px;*/
     -fx-background-radius: 10px;
     -fx-background-color: #ffffff11;
 }
@@ -111,6 +101,8 @@
     -fx-background-color: #ffffff11;
     -fx-background-radius: 0px 0px 10px 10px;
 }
+
+/* TitledPane */
 
 .titled-pane {
     -fx-text-fill: white;
@@ -135,23 +127,4 @@
 
 .titled-pane > .title > .arrow-button .arrow {
     -fx-background-color: white;
-}
-
-.text-area .scroll-pane {
-    -fx-background-color: transparent;
-}
-
-.text-area .scroll-pane .viewport{
-    -fx-background-color: transparent;
-}
-
-.text-area .scroll-pane .content{
-    -fx-background-color: transparent;
-}
-
-.scroll-bar:vertical, .scroll-bar:horizontal, .corner {
-    -fx-background-color: transparent;
-}
-.text-area .scroll-bar:vertical .track {
-    -fx-background-color: transparent;
 }
