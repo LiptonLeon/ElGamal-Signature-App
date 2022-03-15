@@ -71,11 +71,7 @@
                   <Font size="13.0" />
                </font>
             </Button>
-            <Label fx:id="textPath" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" prefWidth="168.0" text="*nowy" HBox.hgrow="ALWAYS">
-               <styleClass>
-                  <String fx:value="labelSimple" />
-                  <String fx:value="labelPath" />
-               </styleClass>
+            <Label fx:id="textPath" contentDisplay="RIGHT" ellipsisString="" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" prefWidth="168.0" styleClass="labelPath" text="nowy*" textAlignment="RIGHT" textOverrun="LEADING_ELLIPSIS" HBox.hgrow="ALWAYS">
                <font>
                   <Font name="Arial Narrow" size="12.0" />
                </font>
@@ -112,7 +108,7 @@
                   <Font size="13.0" />
                </font>
             </Button>
-            <Label fx:id="signPath" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" prefWidth="220.0" text="*nowy" HBox.hgrow="ALWAYS">
+            <Label fx:id="signPath" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" prefWidth="220.0" text="nowy*" HBox.hgrow="ALWAYS">
                <styleClass>
                   <String fx:value="labelSimple" />
                   <String fx:value="labelPath" />
@@ -251,7 +247,7 @@
                      <Font size="13.0" />
                   </font>
                </Button>
-               <Label fx:id="keyPath" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="506.0" styleClass="labelPath" text="*nowy" HBox.hgrow="ALWAYS">
+               <Label fx:id="keyPath" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="506.0" styleClass="labelPath" text="nowy*" HBox.hgrow="ALWAYS">
                   <HBox.margin>
                      <Insets />
                   </HBox.margin>

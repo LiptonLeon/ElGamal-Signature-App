@@ -1,6 +1,5 @@
 package egs.gui;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
@@ -43,7 +42,7 @@ public class EgsController {
         stage.setIconified(true);
     }
 
-    public void onTextLoad(ActionEvent actionEvent) {
+    public void onTextLoad() {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             //TODO: Load text
@@ -51,7 +50,7 @@ public class EgsController {
         }
     }
 
-    public void onTextSave(ActionEvent actionEvent) {
+    public void onTextSave() {
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
             //TODO: Save text
@@ -59,7 +58,7 @@ public class EgsController {
         }
     }
 
-    public void onSignLoad(ActionEvent actionEvent) {
+    public void onSignLoad() {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             //TODO: Load signature
@@ -67,7 +66,7 @@ public class EgsController {
         }
     }
 
-    public void onSignSave(ActionEvent actionEvent) {
+    public void onSignSave() {
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
             //TODO: Save signature
@@ -75,7 +74,7 @@ public class EgsController {
         }
     }
 
-    public void onKeyLoad(ActionEvent actionEvent) {
+    public void onKeyLoad() {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             //TODO: Load keys
@@ -83,7 +82,7 @@ public class EgsController {
         }
     }
 
-    public void onKeySave(ActionEvent actionEvent) {
+    public void onKeySave() {
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
             //TODO: Save keys
