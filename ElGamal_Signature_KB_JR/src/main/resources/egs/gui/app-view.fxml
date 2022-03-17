@@ -120,7 +120,7 @@
          <GridPane.margin>
             <Insets />
          </GridPane.margin>
-         <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="94.0" text=" Podpisz →">
+         <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="102.0" text=" Podpisz →">
             <VBox.margin>
                <Insets />
             </VBox.margin>
@@ -128,7 +128,7 @@
                <Font size="13.0" />
             </font>
          </Button>
-         <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="94.0" text="← Zweryfikuj">
+         <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="102.0" text="← Zweryfikuj">
             <VBox.margin>
                <Insets />
             </VBox.margin>
