@@ -1,0 +1,130 @@
+/* Root node */
+
+.mainElement {
+    -fx-background-color: linear-gradient(to left, rgba(48,38,29,1) 0%, rgba(47,28,62,1) 100%);
+    -fx-background-radius: 10px;
+}
+
+/* Labels */
+
+.label {
+    -fx-text-fill: white;
+    -fx-font-family: System;
+    -fx-font-size: 13px;
+}
+
+.labelPath {
+    -fx-font-size: 12px;
+}
+
+.labelSimple {
+    -fx-text-fill: white;
+}
+
+.labelGradient {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: linear-gradient(to left, rgba(255,141,0,0.8) 0%, rgba(123,0,255,0.8) 100%);
+    -fx-font-size: 14px;
+    -fx-background-radius: 10px 10px 0px 0px;
+}
+
+/* TextField and TextArea */
+
+.text-field, .text-area{
+    -fx-background-color: #ffffff22;
+    -fx-text-fill: white;
+    -fx-background-radius: 5px;
+    -fx-font-size: 12px;
+}
+
+.text-field:focused, .text-area:focused {
+    -fx-background-color: #ffffff44;
+}
+
+.text-field:hover, .text-area:hover {
+    -fx-background-color: #ffffff44;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical, .scroll-bar:horizontal, .corner {
+    -fx-background-color: transparent;
+}
+.text-area .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+/* Buttons */
+
+.button {
+    -fx-text-fill: white;
+    -fx-background-color: #ffffff22;
+    -fx-background-radius: 5px;
+    -fx-font-size: 13px;
+    -fx-font-family: System;
+}
+
+.button:hover {
+    -fx-background-color: #ffffff55;
+}
+
+.titleButton {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-background-radius: 50%;
+    -fx-font-size: 16px;
+    -fx-font-family: System;
+}
+
+.titleButton:hover {
+    -fx-background-color: #ffffff55;
+}
+
+/* File boxes and key box */
+
+.borderBox {
+    -fx-background-radius: 10px;
+    -fx-background-color: #ffffff11;
+}
+
+.paneBox {
+    -fx-background-color: #ffffff11;
+    -fx-background-radius: 0px 0px 10px 10px;
+}
+
+/* TitledPane */
+
+.titled-pane {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.titled-pane > *.content{
+    -fx-background-color: transparent ;
+    -fx-border-color: transparent;
+}
+
+.titled-pane > stack-pane {
+    -fx-background-color: transparent ;
+}
+
+.titled-pane > .title {
+    -fx-background-color: linear-gradient(to left, rgba(255,141,0,0.8) 0%, rgba(123,0,255,0.8) 100%);
+    -fx-background-radius: 10px 10px 0px 0px;
+    -fx-font-family: System;
+    -fx-font-size: 14px;
+}
+
+.titled-pane > .title > .arrow-button .arrow {
+    -fx-background-color: white;
+}
