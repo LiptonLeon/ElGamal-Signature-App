@@ -15,10 +15,15 @@ public class Main_terminal {
 
         }
         System.out.println("");
-        String s = "ac16253";
-        System.out.println("Given s: " + s);
-        BigNatural a = new BigNatural(s);
+        String s1 = "e47";
+        System.out.println("Given s: " + s1);
+        String s2 = "d58";
+        System.out.println("Given s: " + s2);
+        BigNatural a = new BigNatural(s1);
+        BigNatural b = new BigNatural(s2);
         System.out.println("toString a: " + a);
-
+        System.out.println("toString b: " + b);
+        BigNatural c = a.add(b);
+        System.out.println("toString c = a + b: " + c);
     }
 }
