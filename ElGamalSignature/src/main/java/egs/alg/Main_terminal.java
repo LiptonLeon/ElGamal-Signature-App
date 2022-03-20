@@ -15,7 +15,11 @@ public class Main_terminal {
 
         }
         System.out.println("");
-        String s1 = "1ce47";
+        System.out.println("toString 1: " + BigNatural.one);
+        BigNatural some = new BigNatural(1234567L);
+        System.out.println("toString 1234567 in hex: " + some);
+
+        String s1 = "e47";
         System.out.println("Given s: " + s1);
         String s2 = "d58";
         System.out.println("Given s: " + s2);
@@ -27,5 +31,9 @@ public class Main_terminal {
         System.out.println("toString c = a + b: " + c);
         BigNatural d = a.multiply(b);
         System.out.println("toString d = a * b: " + d);
+        BigNatural r = BigNatural.getRandom(16); // 16 * 16 = 256 bit
+        System.out.println("toString random: " + r);
+        BigNatural p = BigNatural.probablePrime(16);
+//        System.out.println("toString propable prime: " + p + " and in base10: " + p.toString(10));
     }
 }

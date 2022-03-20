@@ -1,6 +1,8 @@
 package egs.alg.util;
 
+import javax.security.auth.login.LoginException;
 import java.util.Arrays;
+import java.util.Random;
 
 public class BigNatural {
     public static BigNatural zero = new BigNatural(0);
@@ -8,8 +10,6 @@ public class BigNatural {
     public static BigNatural two = new BigNatural(2);
 
     public byte[] mag;
-
-    // some constructors
 
     /**
      * Translates string in hex to BigNatural.
@@ -38,6 +38,7 @@ public class BigNatural {
             idxMag++;
             idxStr++;
         }
+        // idxStr is always even at this point
         while(true) {
             if(idxStr + 2 <= s.length()) {
                 String byteStr = s.substring(idxStr, idxStr + 2);
@@ -46,7 +47,6 @@ public class BigNatural {
                 idxMag++;
                 idxStr += 2;
             } else {
-                System.out.println("error!");
                 break;
             }
         }
@@ -59,29 +59,44 @@ public class BigNatural {
         this.mag = mag;
     }
 
-    private BigNatural(int number) {
-        if(number == 0) {
+    public BigNatural(long number) {
+        if(number < 0) {
             mag = new byte[0];
+            return;
         }
-        if(number < (1 << 8)) {
-            mag = new byte[1];
-            mag[0] = (byte) (number);
-        } else {
-            System.out.println("out of range, must be < 255!\n Implement yourself if you need this");
-            mag = new byte[0];
+        int byteLen = 0;
+        while(number >= (1L << (byteLen * 8))) {
+            byteLen++;
         }
-
+        mag = new byte[byteLen];
+        for(int i = byteLen - 1; i >= 0; i--) {
+            mag[i] = (byte) (number >>> ((mag.length - i - 1) * 8));
+        }
     }
 
-    public BigNatural modPow(BigNatural exp, BigNatural mod) {
-        return null;
+    public static BigNatural getRandom(int length) {
+        byte[] new_mag = new byte[length];
+        Random rng = new Random();
+        rng.nextBytes(new_mag);
+        while(new_mag[0] == 0) { // ensure that returned number does not have leading zeros
+            new_mag[0] = (byte) (rng.nextInt());
+        }
+        return new BigNatural(new_mag);
     }
 
-    public BigNatural gcd(BigNatural val) {
-        return null;
-    }
+    private static int[] first_primes_list = {
+            2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
+            31, 37, 41, 43, 47, 53, 59, 61, 67,
+            71, 73, 79, 83, 89, 97, 101, 103,
+            107, 109, 113, 127, 131, 137, 139,
+            149, 151, 157, 163, 167, 173, 179,
+            181, 191, 193, 197, 199, 211, 223,
+            227, 229, 233, 239, 241, 251, 257,
+            263, 269, 271, 277, 281, 283, 293,
+            307, 311, 313, 317, 331, 337, 347, 349};
 
-    public BigNatural probablePrime(int length) {
+    // https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/
+    public static BigNatural probablePrime(int length) {
         return null;
     }
 
@@ -89,6 +104,7 @@ public class BigNatural {
         return null;
     }
 
+    // operations
     public BigNatural add(BigNatural val) {
         if(mag.length == 0) {
             return val;
@@ -96,18 +112,12 @@ public class BigNatural {
         if(val.mag.length == 0) {
             return this;
         }
-        // x > y
         byte[] x = this.mag;
         byte[] y = val.mag;
-//        System.out.println("x: " + magToStr(x));
-//        System.out.println("y: " + magToStr(y));
         if(x.length < y.length) {
             byte[] tmp = x;
             x = y;
             y = tmp;
-//            System.out.println("swapped");
-//            System.out.println("x: " + magToStr(x));
-//            System.out.println("y: " + magToStr(y));
         }
         int xIdx = x.length - 1;
         int yIdx = y.length - 1;
@@ -125,12 +135,9 @@ public class BigNatural {
             if(yIdx >= 0) {
                 sum +=  Byte.toUnsignedInt(y[yIdx]);
             }
-//            System.out.println("sum: " + sum);
-//            System.out.println("treshold: " + ((1 << 8)));
 
             if(sum >= (1 << 8)) {
                 carry = true;
-//                System.out.println("carry!");
             }
             result[xIdx] = (byte) (sum & 0b11111111);
 
@@ -147,21 +154,20 @@ public class BigNatural {
         return new BigNatural(result);
     }
 
+    public BigNatural subtract(BigNatural val) {
+        return null;
+    }
+
     public BigNatural multiply(BigNatural val) {
         if(mag.length == 0 || val.mag.length == 0) {
             return zero;
         }
         byte[] x = this.mag;
         byte[] y = val.mag;
-//        System.out.println("x: " + magToStr(x));
-//        System.out.println("y: " + magToStr(y));
         if(x.length < y.length) {
             byte[] tmp = x;
             x = y;
             y = tmp;
-//            System.out.println("swapped");
-//            System.out.println("x: " + magToStr(x));
-//            System.out.println("y: " + magToStr(y));
         }
         int xIdx = x.length - 1;
         int yIdx = y.length - 1;
@@ -169,7 +175,6 @@ public class BigNatural {
         byte[] result = new byte[x.length + y.length];
         int tIdx = 0;
         int tiIdx;
-//        Byte.toUnsignedInt(x[xIdx]);
         while(yIdx >= 0) {
             int yInt = Byte.toUnsignedInt(y[yIdx]);
             temp[tIdx] = new int[x.length];
@@ -184,33 +189,21 @@ public class BigNatural {
             xIdx = x.length - 1;
             yIdx--;
         }
-        System.out.println("temp:");
-        for (int[] ints : temp) {
-            for (int anInt : ints) {
-                System.out.print(Integer.toString(anInt, 16) + " ");
-            }
-            System.out.println("");
-        }
         int carry = 0;
         int toResult;
         int rIdx = result.length - 1;
         for(int i = 0; i < rIdx; i++) {
             toResult = carry;
-            System.out.println("----\ncarry: " + Integer.toString(carry, 16));
             int j = i;
             for(int k = 0; k < x.length; j--, k++) {
                 if(j < y.length && j >= 0) {
                     toResult += temp[j][k];
-                    System.out.println("+ " + Integer.toString(temp[j][k], 16));
                 }
             }
-            System.out.println("toResult: " + Integer.toString(toResult, 16));
             if(toResult > 0xff) {
                 carry = (toResult >>> 8);
-                System.out.println("next carry: " + Integer.toString(carry, 16));
             }
             result[rIdx - i] = (byte) (toResult);
-            System.out.println(Integer.toString(Byte.toUnsignedInt(result[rIdx - i]), 16));
         }
         // delete leading zeros
         int idxNotZero = 0;
@@ -225,8 +218,31 @@ public class BigNatural {
         return new BigNatural(result);
     }
 
+    public BigNatural mod(BigNatural mod) {
+        return null;
+    }
+
+    public BigNatural modPow(BigNatural exp, BigNatural mod) {
+        return null;
+    }
+
+    public BigNatural gcd(BigNatural val) {
+        return null;
+    }
+
     public boolean equals(BigNatural val) {
         return Arrays.equals(mag, val.mag);
+    }
+
+    /**
+     * gt - short for 'greater than'
+     * True if this > val.
+     *
+     * @param val
+     * @return
+     */
+    public boolean gt(BigNatural val) {
+        return false;
     }
 
     public String toString() {
@@ -244,5 +260,9 @@ public class BigNatural {
             }
         }
         return ret.toString();
+    }
+
+    private String byteToStr(byte b) {
+        return Integer.toString(Byte.toUnsignedInt(b), 16);
     }
 }
