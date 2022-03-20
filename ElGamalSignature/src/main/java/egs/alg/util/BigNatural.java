@@ -119,6 +119,7 @@ public class BigNatural {
             x = y;
             y = tmp;
         }
+        // x > y
         int xIdx = x.length - 1;
         int yIdx = y.length - 1;
         byte[] result = new byte[x.length];
@@ -133,7 +134,7 @@ public class BigNatural {
             }
             sum += Byte.toUnsignedInt(x[xIdx]);
             if(yIdx >= 0) {
-                sum +=  Byte.toUnsignedInt(y[yIdx]);
+                sum += Byte.toUnsignedInt(y[yIdx]);
             }
 
             if(sum >= (1 << 8)) {
@@ -154,8 +155,44 @@ public class BigNatural {
         return new BigNatural(result);
     }
 
+    /**
+     * if val > this zero is returned
+     *
+     * @param val
+     * @return
+     */
     public BigNatural subtract(BigNatural val) {
-        return null;
+        if(val.gt(this)) {
+            return zero;
+        }
+        int i = this.mag.length - 1;
+        int iVal = val.mag.length - 1;
+        byte[] result = new byte[this.mag.length];
+        boolean carry = false;
+        int toResult;
+        while(i >= 0) {
+            toResult = Byte.toUnsignedInt(mag[i]);
+            if(carry) {
+                toResult -= 1;
+                carry = false;
+            }
+            if(toResult < 0) {
+                carry = true;
+                toResult += 0x100;
+            }
+            if(iVal >= 0) {
+                if(toResult < Byte.toUnsignedInt(val.mag[iVal])) {
+                    carry = true;
+                    toResult += 0x100;
+                }
+                toResult -= Byte.toUnsignedInt(val.mag[iVal]);
+                iVal--;
+            }
+            result[i] = (byte) (toResult);
+            i--;
+        }
+        result = deleteLeadingZeros(result);
+        return new BigNatural(result);
     }
 
     public BigNatural multiply(BigNatural val) {
@@ -205,21 +242,41 @@ public class BigNatural {
             }
             result[rIdx - i] = (byte) (toResult);
         }
-        // delete leading zeros
-        int idxNotZero = 0;
-        while(result[idxNotZero] == 0) {
-            idxNotZero++;
-        }
-        if(idxNotZero != 0) {
-            byte[] resized = new byte[result.length - idxNotZero];
-            System.arraycopy(result, idxNotZero, resized, 0, resized.length);
-            return new BigNatural(resized);
-        }
+        result = deleteLeadingZeros(result);
         return new BigNatural(result);
     }
 
-    public BigNatural mod(BigNatural mod) {
+    public BigNatural divide(BigNatural val) {
+        return divide(val, new BigNatural(1));
+    }
+
+    /**
+     * Returns result of this // val and puts remaining value in reminder
+     *
+     * @param val
+     * @param reminder
+     * @return
+     */
+    public BigNatural divide(BigNatural val, BigNatural reminder) {
+        if(val.mag.length == 0) {
+            throw new ArithmeticException("Division by zero!");
+        }
+        if(val.gt(this)) {
+            reminder.mag = this.mag;
+            return zero;
+        }
+        int divisorLen = val.mag.length;
+        // copy mag?
         return null;
+    }
+
+    public BigNatural mod(BigNatural mod) {
+        if(mod.equals(one)) {
+            return one;
+        }
+        BigNatural reminder = new BigNatural(1);
+        divide(mod, reminder);
+        return reminder;
     }
 
     public BigNatural modPow(BigNatural exp, BigNatural mod) {
@@ -242,7 +299,20 @@ public class BigNatural {
      * @return
      */
     public boolean gt(BigNatural val) {
-        return false;
+        if(this.mag.length > val.mag.length) {
+            return true;
+        }
+        if(this.mag.length < val.mag.length) {
+            return false;
+        }
+        for(int i = 0; i < this.mag.length; i++) {
+            if(this.mag[i] > val.mag[i]) {
+                return true;
+            } else if(this.mag[i] < val.mag[i]) {
+                return false;
+            }
+        }
+        return false; // equal
     }
 
     public String toString() {
@@ -250,11 +320,17 @@ public class BigNatural {
     }
 
     private static String magToStr(byte[] mag) {
+        if(mag.length == 0) {
+            return "0";
+        }
         StringBuilder ret = new StringBuilder();
         for(int i = 0; i < mag.length; i++) {
             int uns = Byte.toUnsignedInt(mag[i]);
             if(uns == 0) {
                 ret.append("00");
+            } else if(i != 0 && uns < 0x10) {
+                ret.append("0");
+                ret.append(Integer.toString(uns, 16));
             } else {
                 ret.append(Integer.toString(uns, 16));
             }
@@ -264,5 +340,22 @@ public class BigNatural {
 
     private String byteToStr(byte b) {
         return Integer.toString(Byte.toUnsignedInt(b), 16);
+    }
+
+    private byte[] deleteLeadingZeros(byte[] arr) {
+        int idxNotZero = 0;
+        while(arr[idxNotZero] == 0) {
+            idxNotZero++;
+        }
+        if(idxNotZero != 0) {
+            byte[] resized = new byte[arr.length - idxNotZero];
+            System.arraycopy(arr, idxNotZero, resized, 0, resized.length);
+            return resized;
+        }
+        return arr;
+    }
+
+    private void swapIfYSmaller(byte[] x, byte[] y) {
+
     }
 }

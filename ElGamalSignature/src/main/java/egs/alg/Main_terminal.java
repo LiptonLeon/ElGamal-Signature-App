@@ -19,21 +19,28 @@ public class Main_terminal {
         BigNatural some = new BigNatural(1234567L);
         System.out.println("toString 1234567 in hex: " + some);
 
-        String s1 = "e47";
-        System.out.println("Given s: " + s1);
-        String s2 = "d58";
-        System.out.println("Given s: " + s2);
-        BigNatural a = new BigNatural(s1);
-        BigNatural b = new BigNatural(s2);
-        System.out.println("toString a: " + a);
-        System.out.println("toString b: " + b);
-        BigNatural c = a.add(b);
-        System.out.println("toString c = a + b: " + c);
-        BigNatural d = a.multiply(b);
-        System.out.println("toString d = a * b: " + d);
-        BigNatural r = BigNatural.getRandom(16); // 16 * 16 = 256 bit
-        System.out.println("toString random: " + r);
-        BigNatural p = BigNatural.probablePrime(16);
-//        System.out.println("toString propable prime: " + p + " and in base10: " + p.toString(10));
+        BigNatural a = new BigNatural("100ff");
+        BigNatural b = new BigNatural("100");
+        System.out.printf("is %s > %s: %b\n", a, b, a.gt(b));
+        System.out.printf("%s + %s = %s\n", a, b, a.add(b));
+        System.out.printf("%s - %s = %s\n", a, b, a.subtract(b));
+        System.out.printf("%s - %s = %s\n", b, a, b.subtract(a));
+        System.out.printf("%s * %s = %s\n", a, b, a.multiply(b));
+        System.out.printf("%s / %s = %s\n", a, b, a.divide(b));
+        System.out.printf("%s / %s = %s\n", b, a, b.divide(a));
+        System.out.printf("%s %% %s = %s\n", a, b, a.mod(b));
+        System.out.printf("%s %% %s = %s\n", a, b, b.mod(a));
+        System.out.println("divide with reminder:");
+        BigNatural r = new BigNatural(1);
+        System.out.println("a / b = " + a.divide(b, r) + " r = " + r);
+        System.out.println("b / a = " + b.divide(a, r) + " r = " + r);
+
+
+        BigNatural rand = BigNatural.getRandom(16); // 16 * 16 = 256 bit
+        System.out.println("random: " + rand);
+//        BigNatural p = BigNatural.probablePrime(16);
+//        System.out.println("p = propable prime: " + p);
+        // convert to base10: https://www.rapidtables.com/convert/number/hex-to-decimal.html
+        // check if prime: https://onlinemathtools.com/test-prime-number
     }
 }
