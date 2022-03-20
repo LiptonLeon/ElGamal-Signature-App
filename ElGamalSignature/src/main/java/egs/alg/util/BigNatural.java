@@ -89,12 +89,7 @@ public class BigNatural {
         return null;
     }
 
-    public BigNatural multiply(BigNatural val) {
-        return null;
-    }
-
     public BigNatural add(BigNatural val) {
-        System.out.println("begin");
         if(mag.length == 0) {
             return val;
         }
@@ -104,15 +99,15 @@ public class BigNatural {
         // x > y
         byte[] x = this.mag;
         byte[] y = val.mag;
-        System.out.println("x: " + magToStr(x));
-        System.out.println("y: " + magToStr(y));
+//        System.out.println("x: " + magToStr(x));
+//        System.out.println("y: " + magToStr(y));
         if(x.length < y.length) {
             byte[] tmp = x;
             x = y;
             y = tmp;
-            System.out.println("swapped");
-            System.out.println("x: " + magToStr(x));
-            System.out.println("y: " + magToStr(y));
+//            System.out.println("swapped");
+//            System.out.println("x: " + magToStr(x));
+//            System.out.println("y: " + magToStr(y));
         }
         int xIdx = x.length - 1;
         int yIdx = y.length - 1;
@@ -130,12 +125,12 @@ public class BigNatural {
             if(yIdx >= 0) {
                 sum +=  Byte.toUnsignedInt(y[yIdx]);
             }
-            System.out.println("sum: " + sum);
-            System.out.println("treshold: " + ((1 << 8)));
+//            System.out.println("sum: " + sum);
+//            System.out.println("treshold: " + ((1 << 8)));
 
             if(sum >= (1 << 8)) {
                 carry = true;
-                System.out.println("carry!");
+//                System.out.println("carry!");
             }
             result[xIdx] = (byte) (sum & 0b11111111);
 
@@ -149,6 +144,84 @@ public class BigNatural {
             return new BigNatural(resized);
         }
 
+        return new BigNatural(result);
+    }
+
+    public BigNatural multiply(BigNatural val) {
+        if(mag.length == 0 || val.mag.length == 0) {
+            return zero;
+        }
+        byte[] x = this.mag;
+        byte[] y = val.mag;
+//        System.out.println("x: " + magToStr(x));
+//        System.out.println("y: " + magToStr(y));
+        if(x.length < y.length) {
+            byte[] tmp = x;
+            x = y;
+            y = tmp;
+//            System.out.println("swapped");
+//            System.out.println("x: " + magToStr(x));
+//            System.out.println("y: " + magToStr(y));
+        }
+        int xIdx = x.length - 1;
+        int yIdx = y.length - 1;
+        int[][] temp = new int[y.length][];
+        byte[] result = new byte[x.length + y.length];
+        int tIdx = 0;
+        int tiIdx;
+//        Byte.toUnsignedInt(x[xIdx]);
+        while(yIdx >= 0) {
+            int yInt = Byte.toUnsignedInt(y[yIdx]);
+            temp[tIdx] = new int[x.length];
+            tiIdx = 0;
+            while(xIdx >= 0) {
+                int xInt = Byte.toUnsignedInt(x[xIdx]);
+                temp[tIdx][tiIdx] = xInt * yInt;
+                tiIdx++;
+                xIdx--;
+            }
+            tIdx++;
+            xIdx = x.length - 1;
+            yIdx--;
+        }
+        System.out.println("temp:");
+        for (int[] ints : temp) {
+            for (int anInt : ints) {
+                System.out.print(Integer.toString(anInt, 16) + " ");
+            }
+            System.out.println("");
+        }
+        int carry = 0;
+        int toResult;
+        int rIdx = result.length - 1;
+        for(int i = 0; i < rIdx; i++) {
+            toResult = carry;
+            System.out.println("----\ncarry: " + Integer.toString(carry, 16));
+            int j = i;
+            for(int k = 0; k < x.length; j--, k++) {
+                if(j < y.length && j >= 0) {
+                    toResult += temp[j][k];
+                    System.out.println("+ " + Integer.toString(temp[j][k], 16));
+                }
+            }
+            System.out.println("toResult: " + Integer.toString(toResult, 16));
+            if(toResult > 0xff) {
+                carry = (toResult >>> 8);
+                System.out.println("next carry: " + Integer.toString(carry, 16));
+            }
+            result[rIdx - i] = (byte) (toResult);
+            System.out.println(Integer.toString(Byte.toUnsignedInt(result[rIdx - i]), 16));
+        }
+        // delete leading zeros
+        int idxNotZero = 0;
+        while(result[idxNotZero] == 0) {
+            idxNotZero++;
+        }
+        if(idxNotZero != 0) {
+            byte[] resized = new byte[result.length - idxNotZero];
+            System.arraycopy(result, idxNotZero, resized, 0, resized.length);
+            return new BigNatural(resized);
+        }
         return new BigNatural(result);
     }
 

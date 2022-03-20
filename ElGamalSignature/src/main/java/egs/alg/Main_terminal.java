@@ -15,7 +15,7 @@ public class Main_terminal {
 
         }
         System.out.println("");
-        String s1 = "e47";
+        String s1 = "1ce47";
         System.out.println("Given s: " + s1);
         String s2 = "d58";
         System.out.println("Given s: " + s2);
@@ -25,5 +25,7 @@ public class Main_terminal {
         System.out.println("toString b: " + b);
         BigNatural c = a.add(b);
         System.out.println("toString c = a + b: " + c);
+        BigNatural d = a.multiply(b);
+        System.out.println("toString d = a * b: " + d);
     }
 }
