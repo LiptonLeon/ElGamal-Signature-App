@@ -19,8 +19,8 @@ public class Main_terminal {
         BigNatural some = new BigNatural(1234567L);
         System.out.println("toString 1234567 in hex: " + some);
 
-        BigNatural a = new BigNatural("100ff");
-        BigNatural b = new BigNatural("100");
+        BigNatural a = new BigNatural("1ac621478ca921ac621478ca92312bac");
+        BigNatural b = new BigNatural("1b7");
         System.out.printf("is %s > %s: %b\n", a, b, a.gt(b));
         System.out.printf("%s + %s = %s\n", a, b, a.add(b));
         System.out.printf("%s - %s = %s\n", a, b, a.subtract(b));
@@ -29,15 +29,16 @@ public class Main_terminal {
         System.out.printf("%s / %s = %s\n", a, b, a.divide(b));
         System.out.printf("%s / %s = %s\n", b, a, b.divide(a));
         System.out.printf("%s %% %s = %s\n", a, b, a.mod(b));
-        System.out.printf("%s %% %s = %s\n", a, b, b.mod(a));
+        System.out.printf("%s %% %s = %s\n", b, a, b.mod(a));
         System.out.println("divide with reminder:");
         BigNatural r = new BigNatural(1);
-        System.out.println("a / b = " + a.divide(b, r) + " r = " + r);
-        System.out.println("b / a = " + b.divide(a, r) + " r = " + r);
+        System.out.printf("%s / %s = %s, r = %s", a, b, a.divide(b, r), r);
+//        System.out.println("b / a = " + b.divide(a, r) + " r = " + r);
+//
+//
+//        BigNatural rand = BigNatural.getRandom(16); // 16 * 16 = 256 bit
+//        System.out.println("random: " + rand);
 
-
-        BigNatural rand = BigNatural.getRandom(16); // 16 * 16 = 256 bit
-        System.out.println("random: " + rand);
 //        BigNatural p = BigNatural.probablePrime(16);
 //        System.out.println("p = propable prime: " + p);
         // convert to base10: https://www.rapidtables.com/convert/number/hex-to-decimal.html
