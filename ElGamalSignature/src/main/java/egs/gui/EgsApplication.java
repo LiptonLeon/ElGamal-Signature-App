@@ -15,6 +15,8 @@ public class EgsApplication extends Application {
         System.setProperty("prism.lcdtext", "false");
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setOpacity(0.95);
+        stage.setMinHeight(500);
+        stage.setMinWidth(520);
 
         FXMLLoader fxmlLoader = new FXMLLoader(EgsApplication.class.getResource("app-view2.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
