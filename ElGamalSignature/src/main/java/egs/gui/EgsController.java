@@ -50,13 +50,13 @@ public class EgsController {
         }
     }
 
-    public void onTextSave() {
-        File file = fileChooser.showSaveDialog(stage);
-        if (file != null) {
-            //TODO: Save text
-            textPath.setText(file.getPath());
-        }
-    }
+//    public void onTextSave() {
+//        File file = fileChooser.showSaveDialog(stage);
+//        if (file != null) {
+//            //TODO: Save text
+//            textPath.setText(file.getPath());
+//        }
+//    }
 
     public void onSignLoad() {
         File file = fileChooser.showOpenDialog(stage);

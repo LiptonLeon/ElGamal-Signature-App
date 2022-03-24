@@ -128,3 +128,13 @@
 .titled-pane > .title > .arrow-button .arrow {
     -fx-background-color: white;
 }
+
+/* radio-button */
+.radio-button > .radio {
+    -fx-background-color: #ffffff11;
+}
+
+.radio-button .dot {
+    -fx-mark-highlight-color: linear-gradient(to left, rgba(206,89,94,1) 0%, rgba(173,54,158,1) 100%);
+    -fx-mark-color: linear-gradient(to left, rgba(206,89,94,1) 0%, rgba(173,54,158,1) 100%);
+}
