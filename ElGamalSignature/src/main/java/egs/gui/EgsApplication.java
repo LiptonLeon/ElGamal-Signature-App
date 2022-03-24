@@ -16,7 +16,7 @@ public class EgsApplication extends Application {
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.setOpacity(0.95);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(EgsApplication.class.getResource("app-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(EgsApplication.class.getResource("app-view2.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);
