@@ -1,8 +1,6 @@
 package egs.alg.util;
 
-import javax.security.auth.login.LoginException;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 public class BigNatural {
     public static BigNatural zero = new BigNatural(0);
@@ -57,6 +55,23 @@ public class BigNatural {
 
     private BigNatural(byte[] mag) {
         this.mag = mag;
+    }
+
+    private BigNatural(Byte[] nmag) {
+        mag = new byte[nmag.length];
+        System.arraycopy(nmag, 0, mag, 0, nmag.length);
+    }
+
+    private BigNatural(LinkedList<Byte> nmag) {
+        int zeroIdx = 0;
+        while(nmag.get(zeroIdx) == 0) {
+            zeroIdx++;
+        }
+        mag = new byte[nmag.size() - zeroIdx];
+
+        for (int i = 0; i < mag.length; i++, zeroIdx++) {
+            mag[i] = nmag.get(zeroIdx); // O(nlogn) fix!!
+        }
     }
 
     public BigNatural(long number) {
@@ -151,16 +166,9 @@ public class BigNatural {
             resized[0] = 1;
             return new BigNatural(resized);
         }
-
         return new BigNatural(result);
     }
 
-    /**
-     * if val > this zero is returned
-     *
-     * @param val
-     * @return
-     */
     public BigNatural subtract(BigNatural val) {
         if(val.gt(this)) {
             return zero;
@@ -252,6 +260,7 @@ public class BigNatural {
 
     /**
      * Returns result of this // val and puts remaining value in reminder
+     * Caution: very cursed
      *
      * @param val
      * @param reminder
@@ -265,9 +274,43 @@ public class BigNatural {
             reminder.mag = this.mag;
             return zero;
         }
-        int divisorLen = val.mag.length;
-        // copy mag?
-        return null;
+        LinkedList<Byte> current = new LinkedList<>();
+        LinkedList<BigNatural> result = new LinkedList<>();
+
+        for(byte value : this.mag) {
+            current.addLast(value);
+            if(current.size() >= val.mag.length) {
+                BigNatural temp = new BigNatural(current);
+                BigNatural toResult = new BigNatural(0);
+                while(temp.gt(val)) {
+                    temp = temp.subtract(val);
+                    toResult = toResult.add(one); // idk if there's a better way
+                }
+                if(!toResult.equals(zero)) {
+                    current.clear();
+                    for (int i = 0; i < temp.mag.length; i++) {
+                        current.add(temp.mag[i]);
+                    }
+                }
+                result.add(toResult);
+            }
+        }
+        BigNatural newReminder = new BigNatural(current);
+        reminder.mag = newReminder.mag;
+
+        byte[] ret = new byte[this.mag.length];
+        int retIdx = 0;
+        for (BigNatural b: result) {
+            if (b != zero) {
+                for (byte bt: b.mag) {
+                    ret[retIdx] = bt;
+                    retIdx++;
+                }
+            }
+        }
+        byte[] retRightSize = new byte[retIdx];
+        System.arraycopy(ret, 0, retRightSize, 0, retIdx);
+        return new BigNatural(retRightSize);
     }
 
     public BigNatural mod(BigNatural mod) {
@@ -306,9 +349,9 @@ public class BigNatural {
             return false;
         }
         for(int i = 0; i < this.mag.length; i++) {
-            if(this.mag[i] > val.mag[i]) {
+            if(Byte.toUnsignedInt(this.mag[i]) > Byte.toUnsignedInt(val.mag[i])) {
                 return true;
-            } else if(this.mag[i] < val.mag[i]) {
+            } else if(Byte.toUnsignedInt(this.mag[i]) < Byte.toUnsignedInt(val.mag[i])) {
                 return false;
             }
         }
@@ -353,9 +396,5 @@ public class BigNatural {
             return resized;
         }
         return arr;
-    }
-
-    private void swapIfYSmaller(byte[] x, byte[] y) {
-
     }
 }
