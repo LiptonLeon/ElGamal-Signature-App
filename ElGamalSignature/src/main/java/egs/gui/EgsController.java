@@ -1,13 +1,23 @@
 package egs.gui;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.io.File;
+import java.io.IOException;
 
 public class EgsController {
+
+    @FXML
+    public ToggleGroup input;
 
     @FXML
     private Label textPath;
@@ -87,6 +97,32 @@ public class EgsController {
         if (file != null) {
             //TODO: Save keys
             keyPath.setText(file.getPath());
+        }
+    }
+
+    public void onSignAction() {
+        openPopup("Podpisywanie\nniezaimplementowane!");
+    }
+
+    public void onVerifyAction() {
+        openPopup("Weryfikacja niezaimplementowana!");
+    }
+
+    private void openPopup(String info) {
+        Stage popupStage = new Stage();
+        popupStage.initStyle(StageStyle.TRANSPARENT);
+        popupStage.setOpacity(0.95);
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(EgsApplication.class.getResource("popup-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            scene.setFill(Color.TRANSPARENT);
+            popupStage.setScene(scene);
+            ((PopupController) fxmlLoader.getController()).setInfo(info);
+            popupStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
