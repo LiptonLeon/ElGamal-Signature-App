@@ -61,6 +61,10 @@ public class BigNatural {
         int zeroIdx = 0;
         while(nmag.get(zeroIdx) == 0) {
             zeroIdx++;
+            if(zeroIdx == nmag.size()) {
+                mag = new byte[0];
+                return; // one case???
+            }
         }
         mag = new byte[nmag.size() - zeroIdx];
 
@@ -284,44 +288,38 @@ public class BigNatural {
             return zero;
         }
         LinkedList<Byte> current = new LinkedList<>();
-        LinkedList<BigNatural> result = new LinkedList<>();
+        LinkedList<Byte> result = new LinkedList<>();
+        byte toResult;
 
         for(byte value : this.mag) {
             current.addLast(value);
+            toResult = 0;
             if(current.size() >= val.mag.length) {
                 BigNatural temp = new BigNatural(current);
-                BigNatural toResult = new BigNatural(0);
                 while(temp.geq(val)) {
                     temp = temp.subtract(val);
-                    toResult = toResult.add(one); // idk if there's a better way
+                    toResult += 1;
                 }
-                if(!toResult.equals(zero)) {
+                if(toResult != 0) {
                     current.clear();
                     for (int i = 0; i < temp.mag.length; i++) {
                         current.add(temp.mag[i]);
                     }
                 }
-                result.add(toResult);
             }
+            result.add(toResult);
         }
         BigNatural newReminder = new BigNatural(current);
         reminder.mag = newReminder.mag;
 
         byte[] ret = new byte[this.mag.length];
         int retIdx = 0;
-        for (BigNatural b: result) {
-            if (b != zero) {
-                for (byte bt: b.mag) {
-                    ret[retIdx] = bt;
-                    retIdx++;
-                }
-            }
+        for (Byte b: result) {
+            ret[retIdx] = b;
+            retIdx++;
         }
-        BigNatural t = new BigNatural(ret);
-        System.out.printf("before resize: %s\nretIdx: %s\n", t, retIdx);
-        byte[] retRightSize = new byte[retIdx];
-        System.arraycopy(ret, 0, retRightSize, 0, retIdx);
-        return new BigNatural(retRightSize);
+        ret = deleteLeadingZeros(ret);
+        return new BigNatural(ret);
 
     }
 
