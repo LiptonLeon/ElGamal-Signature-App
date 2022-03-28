@@ -9,6 +9,8 @@ public class BigNatural {
 
     public byte[] mag;
 
+    // ---------- CONSTRUCTORS ---------- //
+
     /**
      * Translates string in hex to BigNatural.
      * xxx Podjebane w większości z BigInteger, spójż sobie tam
@@ -53,16 +55,15 @@ public class BigNatural {
         }
     }
 
-    private BigNatural(byte[] mag) {
+    public BigNatural(byte[] mag) {
         this.mag = mag;
     }
 
-    private BigNatural(Byte[] nmag) {
-        mag = new byte[nmag.length];
-        System.arraycopy(nmag, 0, mag, 0, nmag.length);
-    }
-
     private BigNatural(LinkedList<Byte> nmag) {
+        if(nmag.size() == 0) {
+            mag = new byte[0];
+            return;
+        }
         int zeroIdx = 0;
         while(nmag.get(zeroIdx) == 0) {
             zeroIdx++;
@@ -89,6 +90,8 @@ public class BigNatural {
         }
     }
 
+    // ---------- RANDOM ---------- //
+
     public static BigNatural getRandom(int length) {
         byte[] new_mag = new byte[length];
         Random rng = new Random();
@@ -98,6 +101,8 @@ public class BigNatural {
         }
         return new BigNatural(new_mag);
     }
+
+    // ---------- PRIMES ---------- //
 
     private static int[] first_primes_list = {
             2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
@@ -111,15 +116,18 @@ public class BigNatural {
             307, 311, 313, 317, 331, 337, 347, 349};
 
     // https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/
+    // todo
     public static BigNatural probablePrime(int length) {
         return null;
     }
 
+    // todo
     public BigNatural nextProbablePrime() {
         return null;
     }
 
-    // operations
+    // ---------- BASIC OPERATIONS ---------- //
+
     public BigNatural add(BigNatural val) {
         if(mag.length == 0) {
             return val;
@@ -258,14 +266,15 @@ public class BigNatural {
         return divide(val, new BigNatural(1));
     }
 
-    /**
-     * Returns result of this // val and puts remaining value in reminder
-     * Caution: very cursed
-     *
-     * @param val
-     * @param reminder
-     * @return
-     */
+    public BigNatural mod(BigNatural mod) {
+        if(mod.equals(one)) {
+            return zero;
+        }
+        BigNatural reminder = new BigNatural(1);
+        divide(mod, reminder);
+        return reminder;
+    }
+
     public BigNatural divide(BigNatural val, BigNatural reminder) {
         if(val.mag.length == 0) {
             throw new ArithmeticException("Division by zero!");
@@ -282,7 +291,7 @@ public class BigNatural {
             if(current.size() >= val.mag.length) {
                 BigNatural temp = new BigNatural(current);
                 BigNatural toResult = new BigNatural(0);
-                while(temp.gt(val)) {
+                while(temp.geq(val)) {
                     temp = temp.subtract(val);
                     toResult = toResult.add(one); // idk if there's a better way
                 }
@@ -311,36 +320,41 @@ public class BigNatural {
         byte[] retRightSize = new byte[retIdx];
         System.arraycopy(ret, 0, retRightSize, 0, retIdx);
         return new BigNatural(retRightSize);
+
     }
 
-    public BigNatural mod(BigNatural mod) {
-        if(mod.equals(one)) {
-            return one;
-        }
-        BigNatural reminder = new BigNatural(1);
-        divide(mod, reminder);
-        return reminder;
-    }
+    // ---------- ADVANCED OPERATIONS ---------- //
 
+    // TODO!
     public BigNatural modPow(BigNatural exp, BigNatural mod) {
         return null;
     }
 
     public BigNatural gcd(BigNatural val) {
-        return null;
+        if(this == zero) {
+            return val;
+        }
+        if(val == zero) {
+            return this;
+        }
+        BigNatural a = new BigNatural((mag));
+        BigNatural b = new BigNatural(val.mag);
+        BigNatural r = a.mod(b);
+        while(r.gt(zero)) {
+            System.out.printf("a: %s, b %s\n", a, b);
+            a.mag = b.mag;
+            b.mag = r.mag;
+            r = a.mod(b);
+        }
+        return b;
     }
+
+    // ---------- CONDITIONS ---------- //
 
     public boolean equals(BigNatural val) {
         return Arrays.equals(mag, val.mag);
     }
 
-    /**
-     * gt - short for 'greater than'
-     * True if this > val.
-     *
-     * @param val
-     * @return
-     */
     public boolean gt(BigNatural val) {
         if(this.mag.length > val.mag.length) {
             return true;
@@ -357,6 +371,42 @@ public class BigNatural {
         }
         return false; // equal
     }
+
+    public boolean geq(BigNatural val) {
+        if(this.mag.length > val.mag.length) {
+            return true;
+        }
+        if(this.mag.length < val.mag.length) {
+            return false;
+        }
+        for(int i = 0; i < this.mag.length; i++) {
+            if(Byte.toUnsignedInt(this.mag[i]) > Byte.toUnsignedInt(val.mag[i])) {
+                return true;
+            } else if(Byte.toUnsignedInt(this.mag[i]) < Byte.toUnsignedInt(val.mag[i])) {
+                return false;
+            }
+        }
+        return true; // equal
+    }
+
+    public boolean lt(BigNatural val) {
+        if(this.mag.length < val.mag.length) {
+            return true;
+        }
+        if(this.mag.length > val.mag.length) {
+            return false;
+        }
+        for(int i = 0; i < this.mag.length; i++) {
+            if(Byte.toUnsignedInt(this.mag[i]) < Byte.toUnsignedInt(val.mag[i])) {
+                return true;
+            } else if(Byte.toUnsignedInt(this.mag[i]) > Byte.toUnsignedInt(val.mag[i])) {
+                return false;
+            }
+        }
+        return false; // equal
+    }
+
+    // ---------- DISPLAYING ---------- //
 
     public String toString() {
         return magToStr(mag);
@@ -385,10 +435,15 @@ public class BigNatural {
         return Integer.toString(Byte.toUnsignedInt(b), 16);
     }
 
+    // ---------- VARIOUS COMMON FUNCTIONS ---------- //
+
     private byte[] deleteLeadingZeros(byte[] arr) {
         int idxNotZero = 0;
         while(arr[idxNotZero] == 0) {
             idxNotZero++;
+            if(idxNotZero == arr.length) {
+                return new byte[0];
+            }
         }
         if(idxNotZero != 0) {
             byte[] resized = new byte[arr.length - idxNotZero];

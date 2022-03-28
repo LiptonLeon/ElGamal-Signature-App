@@ -9,17 +9,21 @@ import java.net.URL;
 public class Main_terminal {
     public static void main(String[] args) throws IOException {
         URL uri = Main_terminal.class.getResource("file1.txt");
-        byte[] dane = FileIO.getFileContent(uri.getPath());
-        for(int i = 0; i < dane.length; i++) {
-            System.out.print((char)(dane[i]));
+        String path = uri.getPath();
 
-        }
-        System.out.println("");
+        byte[] data = FileIO.getFileContentBytes(path);
+        BigNatural fromFileBytes = new BigNatural(data);
+
+        String str = FileIO.getFileContentString(path);
+        BigNatural fromFileString = new BigNatural(str);
+
+        System.out.println("number read from file1.txt by byte: " + fromFileBytes);
+        System.out.println("number read from file1.txt by string: " + fromFileString);
         System.out.println("toString 1: " + BigNatural.one);
         BigNatural some = new BigNatural(1234567L);
         System.out.println("toString 1234567 in hex: " + some);
 
-        BigNatural a = new BigNatural("1ac621478ca921ac621478ca92312bac");
+        BigNatural a = new BigNatural("732311be");
         BigNatural b = new BigNatural("1b7");
         System.out.printf("is %s > %s: %b\n", a, b, a.gt(b));
         System.out.printf("%s + %s = %s\n", a, b, a.add(b));
@@ -30,9 +34,12 @@ public class Main_terminal {
         System.out.printf("%s / %s = %s\n", b, a, b.divide(a));
         System.out.printf("%s %% %s = %s\n", a, b, a.mod(b));
         System.out.printf("%s %% %s = %s\n", b, a, b.mod(a));
+        System.out.printf("GCD(%s, %s) = %s\n", a, b, a.gcd(b));
         System.out.println("divide with reminder:");
         BigNatural r = new BigNatural(1);
-        System.out.printf("%s / %s = %s, r = %s", a, b, a.divide(b, r), r);
+        System.out.printf("%s / %s = %s, r = %s\n", a, b, a.divide(b, r), r);
+        System.out.printf("%s / %s = %s, r = %s\n", b, a, b.divide(a, r), r);
+
 //        System.out.println("b / a = " + b.divide(a, r) + " r = " + r);
 //
 //
