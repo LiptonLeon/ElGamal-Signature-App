@@ -23,22 +23,14 @@ public class Main_terminal {
         BigNatural some = new BigNatural(1234567L);
         System.out.println("toString 1234567 in hex: " + some);
 
-        BigNatural a = new BigNatural("732311be");
-        BigNatural b = new BigNatural("1b7");
-        System.out.printf("is %s > %s: %b\n", a, b, a.gt(b));
-        System.out.printf("%s + %s = %s\n", a, b, a.add(b));
-        System.out.printf("%s - %s = %s\n", a, b, a.subtract(b));
-        System.out.printf("%s - %s = %s\n", b, a, b.subtract(a));
-        System.out.printf("%s * %s = %s\n", a, b, a.multiply(b));
-        System.out.printf("%s / %s = %s\n", a, b, a.divide(b));
-        System.out.printf("%s / %s = %s\n", b, a, b.divide(a));
-        System.out.printf("%s %% %s = %s\n", a, b, a.mod(b));
-        System.out.printf("%s %% %s = %s\n", b, a, b.mod(a));
-        System.out.printf("GCD(%s, %s) = %s\n", a, b, a.gcd(b));
+        BigNatural a = new BigNatural("5d92ddc");
+        BigNatural b = new BigNatural("2ec21");
+//        System.out.printf("GCD(%s, %s) = %s\n", a, b, a.gcd(b));
+//        System.out.printf("GCD(%s, %s) = %s\n", b, a, b.gcd(a));
         System.out.println("divide with reminder:");
         BigNatural r = new BigNatural(1);
         System.out.printf("%s / %s = %s, r = %s\n", a, b, a.divide(b, r), r);
-        System.out.printf("%s / %s = %s, r = %s\n", b, a, b.divide(a, r), r);
+//        System.out.printf("%s / %s = %s, r = %s\n", b, a, b.divide(a, r), r);
 
 //        System.out.println("b / a = " + b.divide(a, r) + " r = " + r);
 //

@@ -11,12 +11,6 @@ public class BigNatural {
 
     // ---------- CONSTRUCTORS ---------- //
 
-    /**
-     * Translates string in hex to BigNatural.
-     * xxx Podjebane w większości z BigInteger, spójż sobie tam
-     *
-     * @param s
-     */
     public BigNatural(String s) {
         int idxStr = 0;
         // Skip leading zeros and compute number of digits in magnitude
@@ -76,7 +70,7 @@ public class BigNatural {
     }
 
     public BigNatural(long number) {
-        if(number < 0) {
+        if(number == 0) {
             mag = new byte[0];
             return;
         }
@@ -225,9 +219,9 @@ public class BigNatural {
         int xIdx = x.length - 1;
         int yIdx = y.length - 1;
         int[][] temp = new int[y.length][];
-        byte[] result = new byte[x.length + y.length];
         int tIdx = 0;
         int tiIdx;
+        // fill temp
         while(yIdx >= 0) {
             int yInt = Byte.toUnsignedInt(y[yIdx]);
             temp[tIdx] = new int[x.length];
@@ -242,10 +236,13 @@ public class BigNatural {
             xIdx = x.length - 1;
             yIdx--;
         }
+
+        // temp to result
         int carry = 0;
+        byte[] result = new byte[x.length + y.length];
         int toResult;
         int rIdx = result.length - 1;
-        for(int i = 0; i < rIdx; i++) {
+        for(int i = 0; i < result.length; i++) {
             toResult = carry;
             int j = i;
             for(int k = 0; k < x.length; j--, k++) {
@@ -255,9 +252,12 @@ public class BigNatural {
             }
             if(toResult > 0xff) {
                 carry = (toResult >>> 8);
+            } else {
+                carry = 0;
             }
             result[rIdx - i] = (byte) (toResult);
         }
+        BigNatural t = new BigNatural(result);
         result = deleteLeadingZeros(result);
         return new BigNatural(result);
     }
@@ -317,6 +317,8 @@ public class BigNatural {
                 }
             }
         }
+        BigNatural t = new BigNatural(ret);
+        System.out.printf("before resize: %s\nretIdx: %s\n", t, retIdx);
         byte[] retRightSize = new byte[retIdx];
         System.arraycopy(ret, 0, retRightSize, 0, retIdx);
         return new BigNatural(retRightSize);
@@ -341,7 +343,6 @@ public class BigNatural {
         BigNatural b = new BigNatural(val.mag);
         BigNatural r = a.mod(b);
         while(r.gt(zero)) {
-            System.out.printf("a: %s, b %s\n", a, b);
             a.mag = b.mag;
             b.mag = r.mag;
             r = a.mod(b);
@@ -351,8 +352,12 @@ public class BigNatural {
 
     // ---------- CONDITIONS ---------- //
 
-    public boolean equals(BigNatural val) {
-        return Arrays.equals(mag, val.mag);
+    public boolean equals(Object o) {
+        if(o instanceof BigNatural) {
+            BigNatural val = (BigNatural) o;
+            return Arrays.equals(mag, val.mag);
+        }
+        return false;
     }
 
     public boolean gt(BigNatural val) {
