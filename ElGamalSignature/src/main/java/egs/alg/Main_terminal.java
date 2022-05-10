@@ -5,6 +5,8 @@ import egs.alg.util.FileIO;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main_terminal {
     public static void main(String[] args) throws IOException {
@@ -14,13 +16,15 @@ public class Main_terminal {
         byte[] data = FileIO.getFileContentBytes(path);
         BigNatural fromFileBytes = new BigNatural(data);
 
+
+
         String str = FileIO.getFileContentString(path);
         BigNatural fromFileString = new BigNatural(str);
 
         System.out.println("number read from file1.txt by byte: " + fromFileBytes);
         System.out.println("number read from file1.txt by string: " + fromFileString);
         System.out.println("toString 1: " + BigNatural.one);
-        BigNatural some = new BigNatural(1234567L);
+        BigNatural some = new BigNatural(0x1234567L);
         System.out.println("toString 1234567 in hex: " + some);
 
         BigNatural a = new BigNatural("5d92ddc");

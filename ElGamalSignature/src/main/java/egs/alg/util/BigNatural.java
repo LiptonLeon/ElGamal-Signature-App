@@ -359,23 +359,17 @@ public class BigNatural {
     }
 
     public boolean gt(BigNatural val) {
-        if(this.mag.length > val.mag.length) {
-            return true;
-        }
-        if(this.mag.length < val.mag.length) {
-            return false;
-        }
-        for(int i = 0; i < this.mag.length; i++) {
-            if(Byte.toUnsignedInt(this.mag[i]) > Byte.toUnsignedInt(val.mag[i])) {
-                return true;
-            } else if(Byte.toUnsignedInt(this.mag[i]) < Byte.toUnsignedInt(val.mag[i])) {
-                return false;
-            }
-        }
-        return false; // equal
+        Boolean ret = greater(val);
+        return Objects.requireNonNullElse(ret, false);
     }
 
     public boolean geq(BigNatural val) {
+        Boolean ret = greater(val);
+        return Objects.requireNonNullElse(ret, true);
+    }
+
+    // if equals returns null
+    private Boolean greater(BigNatural val){
         if(this.mag.length > val.mag.length) {
             return true;
         }
@@ -389,7 +383,7 @@ public class BigNatural {
                 return false;
             }
         }
-        return true; // equal
+        return null;
     }
 
     public boolean lt(BigNatural val) {
