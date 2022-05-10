@@ -1,11 +1,16 @@
 package egs.alg.util;
 
+import java.math.BigInteger;
 import java.util.*;
+
+import static java.lang.Math.sqrt;
 
 public class BigNatural {
     public static BigNatural zero = new BigNatural(0);
     public static BigNatural one = new BigNatural(1);
     public static BigNatural two = new BigNatural(2);
+
+    public static Random rng = new Random();
 
     public byte[] mag;
 
@@ -91,18 +96,72 @@ public class BigNatural {
     // ---------- RANDOM ---------- //
 
     public static BigNatural getRandom(int length) {
-        byte[] new_mag = new byte[length];
-        Random rng = new Random();
-        rng.nextBytes(new_mag);
-        while(new_mag[0] == 0) { // ensure that returned number does not have leading zeros
-            new_mag[0] = (byte) (rng.nextInt());
+        byte[] new_mag = getRandMag(length);
+        return new BigNatural(new_mag);
+    }
+
+    public static BigNatural getRandomOdd(int length) {
+        byte[] new_mag = getRandMag(length);
+        while(new_mag[length-1] % 2 == 0) {
+            new_mag[length-1] = (byte) (rng.nextInt());
         }
         return new BigNatural(new_mag);
     }
 
+    public static BigNatural getRandom(BigNatural bound) {
+        byte[] new_mag = getRandMag(bound.mag.length);
+        while(true) {
+            for(int idx = 0; idx < bound.mag.length; idx++) {
+                int a = Byte.toUnsignedInt(new_mag[idx]), b = Byte.toUnsignedInt(bound.mag[idx]);
+                if(a > b) {
+                    if(b != 0) {
+                        new_mag[idx] = (byte) (rng.nextInt(b));
+                        return new BigNatural(new_mag);
+                    }
+                } else if (a < b) {
+                    return new BigNatural(new_mag);
+                } else {
+                    new_mag[idx] = 0;
+                }
+            }
+            // wylosowano dokładnie taką samą liczbę jak n
+            new_mag = getRandMag(bound.mag.length);
+        }
+    }
+
+    private static byte[] getRandMag(int length) {
+        byte[] new_mag = new byte[length];
+        rng.nextBytes(new_mag);
+        while(new_mag[0] == 0) { // ensure that returned number does not have leading zeros
+            new_mag[0] = (byte) (rng.nextInt());
+        }
+        return new_mag;
+    }
+
     // ---------- PRIMES ---------- //
 
-    private static int[] first_primes_list = {
+    // https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/
+    public static BigNatural probablePrime(int length) {
+        if(length <= 2) {
+            int rand = rng.nextInt(0xffff);
+            while(!isIntPrime(rand)) {
+                rand = rng.nextInt(0xffff);
+            }
+            return new BigNatural(rand);
+        }
+        BigNatural p = getLowLevelPrime(length);
+        while(!millerRabinPassed(p, 5)) {
+            p = getLowLevelPrime(length);
+        }
+        return p;
+    }
+
+    // todo
+    public BigNatural nextProbablePrime() {
+        return null;
+    }
+
+    private static final int[] firstPrimes = {
             2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
             31, 37, 41, 43, 47, 53, 59, 61, 67,
             71, 73, 79, 83, 89, 97, 101, 103,
@@ -113,18 +172,82 @@ public class BigNatural {
             263, 269, 271, 277, 281, 283, 293,
             307, 311, 313, 317, 331, 337, 347, 349};
 
+    public static BigNatural getLowLevelPrime(int length) {
+        BigNatural p = null;
+        boolean generated = false;
+        while(!generated) {
+            p = getRandomOdd(length);
+            generated = true;
+            for(int q : firstPrimes) {
+                if(p.mod(new BigNatural(q)).equals(zero)) {
+                    generated = false;
+                }
+            }
+        }
+        return p;
+    }
+
+    private static boolean isIntPrime(int x) {
+        double bound = sqrt(x);
+        for(int i = 2; i < bound; i++) {
+            if(x % i == 0) return false;
+        }
+        return true;
+    }
+
+    private static boolean millerRabinPassed(BigNatural n, int iterations) {
+        BigNatural d = n.subtract(one); // d = n - 1
+
+        while (d.mod(two).isOdd())  //  while d % 2 == 0
+            d = d.divide(two);      //      d /= 2
+
+        for(int i = 0; i < iterations; i++) {
+            if(!millerTest(n, d))
+                return false;
+        }
+        return true;
+    }
+
     // https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/
-    // todo
-    public static BigNatural probablePrime(int length) {
-        return null;
+    // https://www.geeksforgeeks.org/primality-test-set-3-miller-rabin/
+
+    // po zaimplementowaniu tego nadal nie mam pojęcia jak działa
+
+    // This function is called for all k trials.
+    // It returns false if n is composite and
+    // returns false if n is probably prime.
+    // d is an odd number such that d*2<sup>r</sup>
+    // = n-1 for some r >= 1
+    private static boolean millerTest(BigNatural n, BigNatural d) {
+        // a = random(2, n-2)
+        BigNatural a = getRandom( n.subtract(two) ); // a = random(0, n-2)
+        while(a.lt(two)) {                      // while a < 2
+            a = getRandom( n.subtract(two) );   //     a = random(0, n-2)
+        }
+
+        BigNatural x = a.modPow(d, n); // x = a^d % n
+        BigNatural nMinOne = n.subtract(one);
+        if (x.equals(one) || x.equals(nMinOne)) // if (x == 1 || x == n - 1)
+            return true;
+
+        // Keep squaring x while one of the
+        // following doesn't happen
+        // (i) d does not reach n-1
+        // (ii) (x^2) % n is not 1
+        // (iii) (x^2) % n is not n-1
+        while (d.equals(nMinOne)) {
+            x = x.multiply(x).mod(n);   // x = x^2 % n
+            d = d.multiply(two);        // d *= 2
+
+            if (x.equals(one)) // if (x == 1)
+                return false;
+            if (x.equals(nMinOne)) // if (x == n - 1)
+                return true;
+        }
+        return false;
     }
 
-    // todo
-    public BigNatural nextProbablePrime() {
-        return null;
-    }
-
-    // ---------- BASIC OPERATIONS ---------- //
+    // ---------- MATH OPERATIONS ---------- //
 
     public BigNatural add(BigNatural val) {
         if(mag.length == 0) {
@@ -323,11 +446,14 @@ public class BigNatural {
 
     }
 
-    // ---------- ADVANCED OPERATIONS ---------- //
+    // todo
+    public BigNatural pow(BigNatural val) {
+        return zero;
+    }
 
     // TODO!
     public BigNatural modPow(BigNatural exp, BigNatural mod) {
-        return null;
+        return zero;
     }
 
     public BigNatural gcd(BigNatural val) {
@@ -349,6 +475,10 @@ public class BigNatural {
     }
 
     // ---------- CONDITIONS ---------- //
+
+    public boolean isOdd() {
+        return this.mag[this.mag.length - 1] % 2 == 0;
+    }
 
     public boolean equals(Object o) {
         if(o instanceof BigNatural) {

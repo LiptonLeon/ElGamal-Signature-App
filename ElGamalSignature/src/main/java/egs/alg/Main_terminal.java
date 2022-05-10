@@ -24,8 +24,15 @@ public class Main_terminal {
         System.out.println("number read from file1.txt by byte: " + fromFileBytes);
         System.out.println("number read from file1.txt by string: " + fromFileString);
         System.out.println("toString 1: " + BigNatural.one);
-        BigNatural some = new BigNatural(0x1234567L);
+        BigNatural some = new BigNatural(0x12345f2L);
         System.out.println("toString 1234567 in hex: " + some);
+        System.out.println("is odd: " + some.isOdd());
+
+        BigNatural smallPrime = BigNatural.probablePrime(2);
+        System.out.println("small prime: " + smallPrime);
+
+        BigNatural bigPrime = BigNatural.probablePrime(32);
+        System.out.println("big prime: " + bigPrime);
 
         BigNatural a = new BigNatural("5d92ddc");
         BigNatural b = new BigNatural("2ec21");
@@ -46,5 +53,6 @@ public class Main_terminal {
 //        System.out.println("p = propable prime: " + p);
         // convert to base10: https://www.rapidtables.com/convert/number/hex-to-decimal.html
         // check if prime: https://onlinemathtools.com/test-prime-number
+        //      https://www.numberempire.com/primenumbers.php
     }
 }
