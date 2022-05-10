@@ -112,7 +112,7 @@ public class BigNatural {
         byte[] new_mag = getRandMag(bound.mag.length);
         while(true) {
             for(int idx = 0; idx < bound.mag.length; idx++) {
-                int a = Byte.toUnsignedInt(new_mag[idx]), b = Byte.toUnsignedInt(bound.mag[idx]);
+                int a = toInt(new_mag[idx]), b = toInt(bound.mag[idx]);
                 if(a > b) {
                     if(b != 0) {
                         new_mag[idx] = (byte) (rng.nextInt(b));
@@ -162,15 +162,12 @@ public class BigNatural {
     }
 
     private static final int[] firstPrimes = {
-            2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
-            31, 37, 41, 43, 47, 53, 59, 61, 67,
-            71, 73, 79, 83, 89, 97, 101, 103,
-            107, 109, 113, 127, 131, 137, 139,
-            149, 151, 157, 163, 167, 173, 179,
-            181, 191, 193, 197, 199, 211, 223,
-            227, 229, 233, 239, 241, 251, 257,
-            263, 269, 271, 277, 281, 283, 293,
-            307, 311, 313, 317, 331, 337, 347, 349};
+            2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
+            71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139,
+            149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223,
+            227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293,
+            307, 311, 313, 317, 331, 337, 347, 349
+    };
 
     public static BigNatural getLowLevelPrime(int length) {
         BigNatural p = null;
@@ -221,9 +218,9 @@ public class BigNatural {
     private static boolean millerTest(BigNatural n, BigNatural d) {
         // a = random(2, n-2)
         BigNatural a = getRandom( n.subtract(two) ); // a = random(0, n-2)
-        while(a.lt(two)) {                      // while a < 2
+        while(a.lt(two))                        // while a < 2
             a = getRandom( n.subtract(two) );   //     a = random(0, n-2)
-        }
+
 
         BigNatural x = a.modPow(d, n); // x = a^d % n
         BigNatural nMinOne = n.subtract(one);
@@ -276,9 +273,9 @@ public class BigNatural {
             } else {
                 sum = 0;
             }
-            sum += Byte.toUnsignedInt(x[xIdx]);
+            sum += toInt(x[xIdx]);
             if(yIdx >= 0) {
-                sum += Byte.toUnsignedInt(y[yIdx]);
+                sum += toInt(y[yIdx]);
             }
 
             if(sum >= (1 << 8)) {
@@ -308,7 +305,7 @@ public class BigNatural {
         boolean carry = false;
         int toResult;
         while(i >= 0) {
-            toResult = Byte.toUnsignedInt(mag[i]);
+            toResult = toInt(mag[i]);
             if(carry) {
                 toResult -= 1;
                 carry = false;
@@ -318,11 +315,11 @@ public class BigNatural {
                 toResult += 0x100;
             }
             if(iVal >= 0) {
-                if(toResult < Byte.toUnsignedInt(val.mag[iVal])) {
+                if(toResult < toInt(val.mag[iVal])) {
                     carry = true;
                     toResult += 0x100;
                 }
-                toResult -= Byte.toUnsignedInt(val.mag[iVal]);
+                toResult -= toInt(val.mag[iVal]);
                 iVal--;
             }
             result[i] = (byte) (toResult);
@@ -350,11 +347,11 @@ public class BigNatural {
         int tiIdx;
         // fill temp
         while(yIdx >= 0) {
-            int yInt = Byte.toUnsignedInt(y[yIdx]);
+            int yInt = toInt(y[yIdx]);
             temp[tIdx] = new int[x.length];
             tiIdx = 0;
             while(xIdx >= 0) {
-                int xInt = Byte.toUnsignedInt(x[xIdx]);
+                int xInt = toInt(x[xIdx]);
                 temp[tIdx][tiIdx] = xInt * yInt;
                 tiIdx++;
                 xIdx--;
@@ -451,9 +448,15 @@ public class BigNatural {
         return zero;
     }
 
-    // TODO!
     public BigNatural modPow(BigNatural exp, BigNatural mod) {
-        return zero;
+        BigNatural base = (this.gt(mod) ? this : this.mod(mod));
+        BigNatural result = new BigNatural(1);
+        // todo optimize
+        return result;
+    }
+
+    public BigNatural oddModPow(BigNatural exp, BigNatural mod) {
+        return one;
     }
 
     public BigNatural gcd(BigNatural val) {
@@ -481,8 +484,7 @@ public class BigNatural {
     }
 
     public boolean equals(Object o) {
-        if(o instanceof BigNatural) {
-            BigNatural val = (BigNatural) o;
+        if(o instanceof BigNatural val) {
             return Arrays.equals(mag, val.mag);
         }
         return false;
@@ -507,9 +509,9 @@ public class BigNatural {
             return false;
         }
         for(int i = 0; i < this.mag.length; i++) {
-            if(Byte.toUnsignedInt(this.mag[i]) > Byte.toUnsignedInt(val.mag[i])) {
+            if(toInt(this.mag[i]) > toInt(val.mag[i])) {
                 return true;
-            } else if(Byte.toUnsignedInt(this.mag[i]) < Byte.toUnsignedInt(val.mag[i])) {
+            } else if(toInt(this.mag[i]) < toInt(val.mag[i])) {
                 return false;
             }
         }
@@ -524,9 +526,9 @@ public class BigNatural {
             return false;
         }
         for(int i = 0; i < this.mag.length; i++) {
-            if(Byte.toUnsignedInt(this.mag[i]) < Byte.toUnsignedInt(val.mag[i])) {
+            if(toInt(this.mag[i]) < toInt(val.mag[i])) {
                 return true;
-            } else if(Byte.toUnsignedInt(this.mag[i]) > Byte.toUnsignedInt(val.mag[i])) {
+            } else if(toInt(this.mag[i]) > toInt(val.mag[i])) {
                 return false;
             }
         }
@@ -545,7 +547,7 @@ public class BigNatural {
         }
         StringBuilder ret = new StringBuilder();
         for(int i = 0; i < mag.length; i++) {
-            int uns = Byte.toUnsignedInt(mag[i]);
+            int uns = toInt(mag[i]);
             if(uns == 0) {
                 ret.append("00");
             } else if(i != 0 && uns < 0x10) {
@@ -559,7 +561,7 @@ public class BigNatural {
     }
 
     private String byteToStr(byte b) {
-        return Integer.toString(Byte.toUnsignedInt(b), 16);
+        return Integer.toString(toInt(b), 16);
     }
 
     // ---------- VARIOUS COMMON FUNCTIONS ---------- //
@@ -578,5 +580,9 @@ public class BigNatural {
             return resized;
         }
         return arr;
+    }
+    
+    private static int toInt(byte b) {
+        return Byte.toUnsignedInt(b);
     }
 }
