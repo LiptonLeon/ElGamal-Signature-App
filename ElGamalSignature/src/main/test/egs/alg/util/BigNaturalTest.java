@@ -200,7 +200,7 @@ class BigNaturalTest {
             expN = new BigNatural(expI.toString(16));
 
             assertEquals(bigI.mod(modI).toString(16), bigN.mod(modN).toString());
-            assertEquals(bigI.modPow(modI, expI).toString(16), bigN.modPow(modN, expN).toString());
+            assertEquals(bigI.modPow(expI, modI).toString(16), bigN.modPow(expN, modN).toString());
         }
     }
 
@@ -226,7 +226,7 @@ class BigNaturalTest {
             expI = BigInteger.probablePrime(bitLength, rng);
             expN = new BigNatural(expI.toString(16));
 
-            assertEquals(bigI.modPow(modI, expI).toString(16), bigN.modPow(modN, expN).toString());
+            assertEquals(bigI.modPow(expI, modI).toString(16), bigN.modPow(expN, modN).toString());
         }
     }
 
