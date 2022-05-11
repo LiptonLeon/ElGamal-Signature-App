@@ -4,6 +4,7 @@ import egs.alg.util.BigNatural;
 import egs.alg.util.FileIO;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +32,8 @@ public class Main_terminal {
         BigNatural smallPrime = BigNatural.probablePrime(2);
         System.out.println("small prime: " + smallPrime);
 
-        BigNatural bigPrime = BigNatural.probablePrime(32);
-        System.out.println("big prime: " + bigPrime);
+//        BigNatural bigPrime = BigNatural.probablePrime(32);
+//        System.out.println("big prime: " + bigPrime);
 
         BigNatural a = new BigNatural("5d92ddc");
         BigNatural b = new BigNatural("2ec21");

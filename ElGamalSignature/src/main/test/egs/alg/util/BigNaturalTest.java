@@ -3,6 +3,7 @@ package egs.alg.util;
 import eu.hansolo.tilesfx.Tile;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,5 +78,33 @@ class BigNaturalTest {
             assertEquals(result, a.divide(b, r));
             assertEquals(reminder, r);
         }
+    }
+
+    @Test
+    void naturalIntegerTest() {
+        BigNatural bigN;
+        BigInteger bigI;
+        int bitLength = 64;
+        for(int i = 0; i < 1000; i ++) {
+            bigI = BigInteger.probablePrime(bitLength, rng);
+            bigN = new BigNatural(bigI.toString(16));
+            int p = rng.nextInt(bitLength/2);
+            assertEquals(bigI.toString(16), bigN.toString());
+
+            System.out.println(bigI.toString(16) + " p: " + p);
+
+            assertEquals(bigI.getLowestSetBit(), bigN.getLowestSetBit());
+            assertEquals(bigI.shiftRight(p).toString(16), bigN.shiftRight(p).toString());
+            assertEquals(bigI.shiftLeft(p).toString(16), bigN.shiftLeft(p).toString());
+        }
+    }
+
+    @Test
+    void singleNaturalInteger() {
+        BigInteger bigI = new BigInteger("be83fa33", 16);
+        BigNatural bigN = new BigNatural(bigI.toString(16));
+        int p = 15;
+        assertEquals(bigI.shiftRight(p).toString(16), bigN.shiftRight(p).toString());
+        assertEquals(bigI.shiftLeft(p).toString(16), bigN.shiftLeft(p).toString());
     }
 }

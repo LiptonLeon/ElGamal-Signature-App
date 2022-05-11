@@ -3,16 +3,15 @@ package egs.alg.util;
 import java.math.BigInteger;
 import java.util.*;
 
-import static java.lang.Math.sqrt;
+import static java.lang.Math.*;
 
 public class BigNatural {
     public static BigNatural zero = new BigNatural(0);
     public static BigNatural one = new BigNatural(1);
     public static BigNatural two = new BigNatural(2);
-
     public static Random rng = new Random();
 
-    public byte[] mag;
+    private byte[] mag;
 
     // ---------- CONSTRUCTORS ---------- //
 
@@ -55,7 +54,7 @@ public class BigNatural {
     }
 
     public BigNatural(byte[] mag) {
-        this.mag = mag;
+        this.mag = deleteLeadingZeros(mag);
     }
 
     private BigNatural(LinkedList<Byte> nmag) {
@@ -162,7 +161,7 @@ public class BigNatural {
     }
 
     private static final int[] firstPrimes = {
-            2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
+            3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
             71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139,
             149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223,
             227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293,
@@ -448,15 +447,37 @@ public class BigNatural {
         return zero;
     }
 
+    // montgomery modular multiplication
     public BigNatural modPow(BigNatural exp, BigNatural mod) {
         BigNatural base = (this.gt(mod) ? this : this.mod(mod));
-        BigNatural result = new BigNatural(1);
+        if(mod.isOdd()) {
+            // odd
+        } else {
+            int p = mod.getLowestSetBit();
+
+        }
         // todo optimize
-        return result;
+        // https://www.codeproject.com/tips/791253/modpow
+        return one;
     }
 
     public BigNatural oddModPow(BigNatural exp, BigNatural mod) {
         return one;
+    }
+
+    public int getLowestSetBit() {
+        int ret = 0;
+        for(int i = mag.length - 1; i >= 0; i--) {
+            byte b = mag[i];
+//            System.out.println("lsb, byte: " + toInt(b));
+            for(int j = 0; j < 8; j++) {
+                if(((b >>> j) & 1) == 1) {
+                    return ret;
+                }
+                ret++;
+            }
+        }
+        return ret; // mag == 0
     }
 
     public BigNatural gcd(BigNatural val) {
@@ -475,6 +496,40 @@ public class BigNatural {
             r = a.mod(b);
         }
         return b;
+    }
+
+    public BigNatural shiftRight(int n) {
+        int retLen = mag.length - floorDiv(n, 8);
+        byte[] newMag = new byte[retLen];
+        int mod8 = n % 8;
+        int negMod8 = (8 - mod8) % 8;
+
+        for(int i = 0; i < retLen; i++) {
+            newMag[i] = (byte) (toInt(mag[i]) >> mod8);
+            if(i > 0 && mod8 != 0) {
+                newMag[i] ^= (byte) (toInt(mag[i - 1]) << negMod8);
+            }
+//            System.out.printf("mag[i]: %d\n", toInt(newMag[i]));
+        }
+        return new BigNatural(newMag);
+    }
+
+    public BigNatural shiftLeft(int n) {
+        int retLen = mag.length + (int) ceil(n / 8.f);
+        byte[] newMag = new byte[retLen];
+        int mod8 = n % 8;
+        int negMod8 = (8 - mod8) % 8;
+
+        for(int i = 0; i < retLen; i++) {
+            if(i < mag.length) {
+                newMag[i] = (byte) (toInt(mag[i]) >> negMod8);
+            }
+            if(i > 0 && (i - 1) < mag.length && mod8 != 0) {
+                newMag[i] ^= (byte) (toInt(mag[i - 1]) << mod8);
+            }
+//            System.out.printf("mag[i]: %d\n", toInt(newMag[i]));
+        }
+        return new BigNatural(newMag);
     }
 
     // ---------- CONDITIONS ---------- //
