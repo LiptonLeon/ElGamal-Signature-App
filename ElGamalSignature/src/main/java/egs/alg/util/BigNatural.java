@@ -451,13 +451,20 @@ public class BigNatural {
     public BigNatural modPow(BigNatural exp, BigNatural mod) {
         BigNatural base = (this.gt(mod) ? this : this.mod(mod));
         if(mod.isOdd()) {
-            // odd
+            return base.oddModPow(exp, mod);
         } else {
+            // adopded from BigInteger
             int p = mod.getLowestSetBit();
+            BigNatural m1 = mod.shiftLeft(p); // m/2^p
+            BigNatural m2 = one.shiftLeft(p); // 2^p
+            BigNatural base2 = (this.geq(m1) ? this.mod(m1) : this);
+            BigNatural a1 = (m1.equals(one) ? zero : base2.oddModPow(exp, m1));
+            BigNatural a2 = base.modPow2(exp, p);
 
+//            BigNatural y1 = m2.modInverse(m1);
+//            BigNatural y2 = m1.modInverse(m2);
+//            return a1.multiply(m2).multiply(y1).add(a2.multiply(m1).multiply(y2)).mod(mod);
         }
-        // todo optimize
-        // https://www.codeproject.com/tips/791253/modpow
         return one;
     }
 
@@ -465,11 +472,17 @@ public class BigNatural {
         return one;
     }
 
+    private BigNatural modPow2(BigNatural exp, int p) {
+        BigNatural result = one;
+//        BigNatural baseToPow2 = this.mod2(p);
+        int expOffset = 0;
+        return one;
+    }
+
     public int getLowestSetBit() {
         int ret = 0;
         for(int i = mag.length - 1; i >= 0; i--) {
             byte b = mag[i];
-//            System.out.println("lsb, byte: " + toInt(b));
             for(int j = 0; j < 8; j++) {
                 if(((b >>> j) & 1) == 1) {
                     return ret;
@@ -509,7 +522,6 @@ public class BigNatural {
             if(i > 0 && mod8 != 0) {
                 newMag[i] ^= (byte) (toInt(mag[i - 1]) << negMod8);
             }
-//            System.out.printf("mag[i]: %d\n", toInt(newMag[i]));
         }
         return new BigNatural(newMag);
     }
@@ -527,9 +539,38 @@ public class BigNatural {
             if(i > 0 && (i - 1) < mag.length && mod8 != 0) {
                 newMag[i] ^= (byte) (toInt(mag[i - 1]) << mod8);
             }
-//            System.out.printf("mag[i]: %d\n", toInt(newMag[i]));
         }
         return new BigNatural(newMag);
+    }
+
+    // od najmniej znaczącego bitu, tj OD PRAWEJ DO LEWEJ
+    public boolean testBit(int n) {
+        int idx = mag.length - floorDiv(n, 8) - 1;
+        if(idx < 0)
+            return false; // mb throw
+        byte b = mag[idx];
+        return ((b & (1 << (n % 8))) != 0);
+    }
+
+    private boolean testBitFromLeft(int n) {
+        int leadingZeros = 0;
+        while((mag[0] & (1 << 7 - leadingZeros)) == 0 && leadingZeros < 8) {
+            leadingZeros++;
+        }
+        n += leadingZeros;
+        byte b = mag[floorDiv(n, 8)];
+//        System.out.println(toInt(b) + " n mod 8" + (n % 8));
+        return ((b & (0b10000000L >> (n % 8))) != 0);
+    }
+
+    public int bitLength() {
+        int ret = (mag.length - 1) * 8;
+        for(int i = 7; i >= 0; i--) {
+            if((mag[0] & (1 << i)) != 0) {
+                return ret + i + 1;
+            }
+        }
+        return ret;
     }
 
     // ---------- CONDITIONS ---------- //
