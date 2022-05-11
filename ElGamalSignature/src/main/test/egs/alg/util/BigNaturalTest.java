@@ -130,4 +130,58 @@ class BigNaturalTest {
 
 
     }
+
+    @Test
+    void compareTestSerial() {
+        for(int i = 0; i < ITER_NUM; i++) {
+            a = BigNatural.getRandom(100);
+            b = a.shiftLeft(1);
+
+            assertFalse(b.isOdd());
+
+            assertNotEquals(a, b);
+
+            assertTrue(b.gt(a));
+            assertFalse(a.gt(b));
+
+            assertTrue(a.lt(b));
+            assertFalse(b.lt(a));
+
+            assertTrue(b.geq(a));
+            assertFalse(a.geq(b));
+
+            b = a.shiftLeft(0); // Clone
+
+            assertEquals(a, b);
+
+            assertTrue(a.geq(b));
+            assertTrue(b.geq(a));
+        }
+    }
+
+    @Test
+    void modTestSerial() {
+        BigInteger bigI;
+        BigNatural bigN;
+        BigInteger modI;
+        BigNatural modN;
+        int bitLength = 64;
+        for(int i = 0; i < 1000; i++) {
+            bigI = BigInteger.probablePrime(bitLength, rng);
+            bigN = new BigNatural(bigI.toString(16));
+            modI = BigInteger.probablePrime(bitLength, rng);
+            modN = new BigNatural(modI.toString(16));
+
+            assertEquals(bigI.mod(modI).toString(16), bigN.mod(modN).toString());
+        }
+    }
+    /*
+    @Test
+    void probablePrimeTestSerial() {
+        for(int i = 0; i < ITER_NUM; i++) {
+            BigNatural bigN = BigNatural.probablePrime(100);
+
+            for(int i = new BigNatural(0), )
+        }
+    }*/
 }

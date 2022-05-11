@@ -627,7 +627,7 @@ public class BigNatural {
     // ------------------------------ CONDITIONS ---------- //
 
     public boolean isOdd() {
-        return this.mag[this.mag.length - 1] % 2 == 0;
+        return this.mag[this.mag.length - 1] % 2 == 1;
     }
 
     public boolean equals(Object o) {
