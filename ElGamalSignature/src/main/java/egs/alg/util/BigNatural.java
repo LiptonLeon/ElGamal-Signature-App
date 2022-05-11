@@ -461,6 +461,9 @@ public class BigNatural {
 
     // todo
     public BigNatural pow(BigNatural val) {
+        if(val == zero) {
+            return one;
+        }
         return zero;
     }
 
