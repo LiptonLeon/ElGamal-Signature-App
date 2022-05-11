@@ -84,7 +84,7 @@ class BigNaturalTest {
     void naturalIntegerBinaryOpsTest() {
         BigNatural bigN;
         BigInteger bigI;
-        int bitLength = 57;
+        int bitLength = rng.nextInt(256);
         for(int i = 0; i < 1000; i ++) {
             bigI = BigInteger.probablePrime(bitLength, rng);
             bigN = new BigNatural(bigI.toString(16));
@@ -98,6 +98,7 @@ class BigNaturalTest {
             assertEquals(bigI.shiftRight(p).toString(16), bigN.shiftRight(p).toString());
             assertEquals(bigI.shiftLeft(p).toString(16), bigN.shiftLeft(p).toString());
             assertEquals(bigI.bitLength(), bigN.bitLength());
+            assertEquals(bigI.getLowestSetBit(), bigN.getLowestSetBit());
             for(int j = 0; j < bitLength; j++) {
                 System.out.println("bit: " + j);
                 assertEquals(bigI.testBit(j), bigN.testBit(j));

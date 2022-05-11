@@ -13,7 +13,7 @@ public class BigNatural {
 
     private byte[] mag;
 
-    // ---------- CONSTRUCTORS ---------- //
+    // ------------------------------ CONSTRUCTORS ---------- //
 
     public BigNatural(String s) {
         int idxStr = 0;
@@ -92,7 +92,7 @@ public class BigNatural {
         }
     }
 
-    // ---------- RANDOM ---------- //
+    // ------------------------------ RANDOM ---------- //
 
     public static BigNatural getRandom(int length) {
         byte[] new_mag = getRandMag(length);
@@ -137,7 +137,7 @@ public class BigNatural {
         return new_mag;
     }
 
-    // ---------- PRIMES ---------- //
+    // ------------------------------ PRIMES ---------- //
 
     // https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/
     public static BigNatural probablePrime(int length) {
@@ -243,7 +243,7 @@ public class BigNatural {
         return false;
     }
 
-    // ---------- MATH OPERATIONS ---------- //
+    // ------------------------------ MATH OPERATIONS ---------- //
 
     public BigNatural add(BigNatural val) {
         if(mag.length == 0) {
@@ -398,6 +398,23 @@ public class BigNatural {
         return reminder;
     }
 
+    // this ^ (-1) % mod
+    public BigNatural modInverse(BigNatural mod) {
+        BigNatural modVal = this;
+
+        if (mod.equals(one))
+            return zero;
+
+        if(mod.geq(this)) {
+            modVal = this.mod(mod);
+        }
+
+        if(modVal.equals(one))
+            return one;
+
+        return one;//todo
+    }
+
     public BigNatural divide(BigNatural val, BigNatural reminder) {
         if(val.mag.length == 0) {
             throw new ArithmeticException("Division by zero!");
@@ -452,45 +469,63 @@ public class BigNatural {
         BigNatural base = (this.gt(mod) ? this : this.mod(mod));
         if(mod.isOdd()) {
             return base.oddModPow(exp, mod);
-        } else {
-            // adopded from BigInteger
-            int p = mod.getLowestSetBit();
-            BigNatural m1 = mod.shiftLeft(p); // m/2^p
-            BigNatural m2 = one.shiftLeft(p); // 2^p
-            BigNatural base2 = (this.geq(m1) ? this.mod(m1) : this);
-            BigNatural a1 = (m1.equals(one) ? zero : base2.oddModPow(exp, m1));
-            BigNatural a2 = base.modPow2(exp, p);
-
-//            BigNatural y1 = m2.modInverse(m1);
-//            BigNatural y2 = m1.modInverse(m2);
-//            return a1.multiply(m2).multiply(y1).add(a2.multiply(m1).multiply(y2)).mod(mod);
         }
-        return one;
+        // adapted from BigInteger
+        int p = mod.getLowestSetBit();
+        BigNatural m1 = mod.shiftLeft(p); // m/2^p
+        BigNatural m2 = one.shiftLeft(p); // 2^p
+        BigNatural base2 = (this.geq(m1) ? this.mod(m1) : this);
+        BigNatural a1 = (m1.equals(one) ? zero : base2.oddModPow(exp, m1));
+        BigNatural a2 = base.modPow2(exp, p);
+
+        BigNatural y1 = m2.modInverse(m1);
+        BigNatural y2 = m1.modInverse(m2);
+        return a1.multiply(m2).multiply(y1)
+                 .add(a2.multiply(m1).multiply(y2))
+                 .mod(mod);
     }
 
     public BigNatural oddModPow(BigNatural exp, BigNatural mod) {
         return one;
     }
 
+    // this^exp % 2^p
     private BigNatural modPow2(BigNatural exp, int p) {
         BigNatural result = one;
-//        BigNatural baseToPow2 = this.mod2(p);
+        BigNatural baseToPow2 = this.mod2(p);
         int expOffset = 0;
-        return one;
+
+        int limit = exp.bitLength();
+
+        if(this.testBit(0))
+            limit = Math.min((p - 1), limit);
+
+        while (expOffset < limit) {
+            if (exp.testBit(expOffset))
+                result = result.multiply(baseToPow2).mod2(p);
+            expOffset++;
+            if (expOffset < limit)
+                baseToPow2 = baseToPow2.multiply(baseToPow2).mod2(p);
+        }
+
+        return result;
     }
 
-    public int getLowestSetBit() {
-        int ret = 0;
-        for(int i = mag.length - 1; i >= 0; i--) {
-            byte b = mag[i];
-            for(int j = 0; j < 8; j++) {
-                if(((b >>> j) & 1) == 1) {
-                    return ret;
-                }
-                ret++;
-            }
+    // this % 2^p
+    private BigNatural mod2(int p) {
+        if (bitLength() <= p)
+            return this;
+
+        byte[] newMag = new byte[mag.length];
+        System.arraycopy(mag, 0, newMag, 0, mag.length);
+        int idx = floorDiv(p, 8);
+        for(int i = p % 8; i < 8; i++) {
+            newMag[idx] &= ~(1 << i);
         }
-        return ret; // mag == 0
+        for(int i = idx -1; idx >= 0; idx--) {
+            newMag[i] = 0;
+        }
+        return new BigNatural(newMag);
     }
 
     public BigNatural gcd(BigNatural val) {
@@ -510,6 +545,8 @@ public class BigNatural {
         }
         return b;
     }
+
+    // ------------------------------ BITWISE OPERATORS ---------- //
 
     public BigNatural shiftRight(int n) {
         int retLen = mag.length - floorDiv(n, 8);
@@ -552,6 +589,20 @@ public class BigNatural {
         return ((b & (1 << (n % 8))) != 0);
     }
 
+    public int getLowestSetBit() {
+        int ret = 0;
+        for(int i = mag.length - 1; i >= 0; i--) {
+            byte b = mag[i];
+            for(int j = 0; j < 8; j++) {
+                if(((b >>> j) & 1) == 1) {
+                    return ret;
+                }
+                ret++;
+            }
+        }
+        return ret; // mag == 0
+    }
+
     private boolean testBitFromLeft(int n) {
         int leadingZeros = 0;
         while((mag[0] & (1 << 7 - leadingZeros)) == 0 && leadingZeros < 8) {
@@ -573,7 +624,7 @@ public class BigNatural {
         return ret;
     }
 
-    // ---------- CONDITIONS ---------- //
+    // ------------------------------ CONDITIONS ---------- //
 
     public boolean isOdd() {
         return this.mag[this.mag.length - 1] % 2 == 0;
@@ -631,7 +682,7 @@ public class BigNatural {
         return false; // equal
     }
 
-    // ---------- DISPLAYING ---------- //
+    // ------------------------------ DISPLAYING ---------- //
 
     public String toString() {
         return magToStr(mag);
@@ -656,11 +707,7 @@ public class BigNatural {
         return ret.toString();
     }
 
-    private String byteToStr(byte b) {
-        return Integer.toString(toInt(b), 16);
-    }
-
-    // ---------- VARIOUS COMMON FUNCTIONS ---------- //
+    // ------------------------------ VARIOUS COMMON FUNCTIONS ---------- //
 
     private byte[] deleteLeadingZeros(byte[] arr) {
         int idxNotZero = 0;
