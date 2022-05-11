@@ -81,6 +81,23 @@ class BigNaturalTest {
     }
 
     @Test
+    void powTestSerial() {
+
+        fail("pow is unimplemented!");
+
+        BigInteger bigI;
+        BigNatural bigN;
+        BigNatural expN;
+        int bitLength = 64;
+        for(int i = 0; i < 1000; i++) {
+            bigI = BigInteger.probablePrime(bitLength, rng);
+            bigN = new BigNatural(bigI.toString(16));
+            expN = new BigNatural(i);
+            assertEquals(bigI.pow(i).toString(16), bigN.pow(expN).toString());
+        }
+    }
+
+    @Test
     void naturalIntegerBinaryOpsTest() {
         BigNatural bigN;
         BigInteger bigI;
@@ -159,22 +176,67 @@ class BigNaturalTest {
         }
     }
 
+
+    /*
+     * todo
+     * Fails powMod, always actual: 1
+     * Also check out next test!
+     */
     @Test
     void modTestSerial() {
         BigInteger bigI;
         BigNatural bigN;
         BigInteger modI;
         BigNatural modN;
+        BigInteger expI;
+        BigNatural expN;
         int bitLength = 64;
         for(int i = 0; i < 1000; i++) {
             bigI = BigInteger.probablePrime(bitLength, rng);
             bigN = new BigNatural(bigI.toString(16));
             modI = BigInteger.probablePrime(bitLength, rng);
             modN = new BigNatural(modI.toString(16));
+            expI = BigInteger.probablePrime(bitLength, rng);
+            expN = new BigNatural(expI.toString(16));
 
             assertEquals(bigI.mod(modI).toString(16), bigN.mod(modN).toString());
+            assertEquals(bigI.modPow(modI, expI).toString(16), bigN.modPow(modN, expN).toString());
         }
     }
+
+    /*
+     * todo
+     * When you make separate test for powMod, then it throws exception instead of failing assert.
+     * Both assertions are the same. WHAT IS GOING ON???
+     */
+    @Test
+    void powModTestSerial() {
+        BigInteger bigI;
+        BigNatural bigN;
+        BigInteger modI;
+        BigNatural modN;
+        BigInteger expI;
+        BigNatural expN;
+        int bitLength = 64;
+        for(int i = 0; i < 1000; i++) {
+            bigI = BigInteger.probablePrime(bitLength, rng);
+            bigN = new BigNatural(bigI.toString(16));
+            modI = BigInteger.probablePrime(bitLength, rng);
+            modN = new BigNatural(modI.toString(16));
+            expI = BigInteger.probablePrime(bitLength, rng);
+            expN = new BigNatural(expI.toString(16));
+
+            assertEquals(bigI.modPow(modI, expI).toString(16), bigN.modPow(modN, expN).toString());
+        }
+    }
+
+    /*
+    @Test
+    void test() {
+        int bitLength = 64;
+        BigInteger bigI = BigInteger.probablePrime(bitLength);
+        bigI.mod
+    }*/
     /*
     @Test
     void probablePrimeTestSerial() {
