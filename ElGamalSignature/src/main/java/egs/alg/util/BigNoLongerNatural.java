@@ -209,11 +209,11 @@ public class BigNoLongerNatural {
         return p;
     }
 
-    private static boolean millerRabinPassed(BigNoLongerNatural n, int iterations) {
+    public static boolean millerRabinPassed(BigNoLongerNatural n, int iterations) {
         BigNoLongerNatural d = n.subtract(one); // d = n - 1
 
-        while (d.mod(two).isOdd())  //  while d % 2 == 0
-            d = d.divide(two);      //      d /= 2
+        while (!d.isOdd())          //  while d % 2 == 0
+            d = d.shiftRight(1);    //      d /= 2
 
         for(int i = 0; i < iterations; i++) {
             if(!millerTest(n, d))
@@ -249,7 +249,7 @@ public class BigNoLongerNatural {
         // (i) d does not reach n-1
         // (ii) (x^2) % n is not 1
         // (iii) (x^2) % n is not n-1
-        while (d.equals(nMinOne)) {
+        while (!d.equals(nMinOne)) {
             x = x.multiply(x).mod(n);   // x = x^2 % n
             d = d.multiply(two);        // d *= 2
 
@@ -423,53 +423,6 @@ public class BigNoLongerNatural {
         return new BigNoLongerNatural(result, this.sign == val.sign);
     }
 
-    public BigNoLongerNatural divide(BigNoLongerNatural val) {
-        return divide(val, new BigNoLongerNatural(1));
-    }
-
-    public BigNoLongerNatural mod(BigNoLongerNatural mod) {
-        if(mod.equals(one)) {
-            return zero;
-        }
-        if(!mod.gt(zero)) { // mod < 0
-            return NaN;
-        }
-        BigNoLongerNatural reminder = new BigNoLongerNatural(1);
-        divide(mod, reminder);
-        return reminder;
-    }
-
-    // this ^ (-1) % mod
-    // this.gcd(mod) must equals 1!!!
-    public BigNoLongerNatural modInverse(BigNoLongerNatural mod) {
-        if(mod.equals(one))
-            return zero;
-        if(!mod.sign) {
-            return NaN;
-        }
-        // val, modVal are mutable
-        BigNoLongerNatural val = new BigNoLongerNatural(this);
-        if(mod.geq(this)) {
-            val = this.mod(mod);
-        }
-        BigNoLongerNatural modVal = new BigNoLongerNatural(mod);
-        BigNoLongerNatural x = new BigNoLongerNatural(one);
-        BigNoLongerNatural y = new BigNoLongerNatural(zero);
-        while(val.gt(one)) {
-            BigNoLongerNatural reminder = new BigNoLongerNatural(1);
-            BigNoLongerNatural q = val.divide(modVal, reminder); // reminder goes to modVal
-            BigNoLongerNatural t1 = modVal;
-            modVal = reminder;
-            val = t1;
-            BigNoLongerNatural t2 = y;
-            y = x.subtract(q.multiply(y));
-            x = t2;
-        }
-        if(!x.geq(zero)) // x < 0
-            x = x.add(mod);
-        return x;
-    }
-
     public BigNoLongerNatural divide(BigNoLongerNatural val, BigNoLongerNatural reminder) {
         if(val.mag.length == 0) {
             throw new ArithmeticException("Division by zero!");
@@ -528,35 +481,54 @@ public class BigNoLongerNatural {
         return new BigNoLongerNatural(ret, this.sign == val.sign);
     }
 
-    // todo
-    public BigNoLongerNatural pow(BigNoLongerNatural val) {
-        if(val == zero) {
-            return one;
-        }
-        return zero;
+    public BigNoLongerNatural divide(BigNoLongerNatural val) {
+        return divide(val, new BigNoLongerNatural(1));
     }
 
+    public BigNoLongerNatural mod(BigNoLongerNatural mod) {
+        if(mod.equals(one)) {
+            return zero;
+        }
+        if(!mod.gt(zero)) { // mod < 0
+            return NaN;
+        }
+        BigNoLongerNatural reminder = new BigNoLongerNatural(1);
+        divide(mod, reminder);
+        return reminder;
+    }
+
+    // this ^ (-1) % mod
+    // this.gcd(mod) must equals 1!!!
+    public BigNoLongerNatural modInverse(BigNoLongerNatural mod) {
+        if(mod.equals(one))
+            return zero;
+        if(!mod.sign) {
+            return NaN;
+        }
+        // val, modVal are mutable
+        BigNoLongerNatural val = new BigNoLongerNatural(this);
+        if(mod.geq(this)) {
+            val = this.mod(mod);
+        }
+        BigNoLongerNatural modVal = new BigNoLongerNatural(mod);
+        BigNoLongerNatural x = new BigNoLongerNatural(one);
+        BigNoLongerNatural y = new BigNoLongerNatural(zero);
+        while(val.gt(one)) {
+            BigNoLongerNatural reminder = new BigNoLongerNatural(1);
+            BigNoLongerNatural q = val.divide(modVal, reminder); // reminder goes to modVal
+            BigNoLongerNatural t1 = modVal;
+            modVal = reminder;
+            val = t1;
+            BigNoLongerNatural t2 = y;
+            y = x.subtract(q.multiply(y));
+            x = t2;
+        }
+        if(!x.geq(zero)) // x < 0
+            x = x.add(mod);
+        return x;
+    }
 
     public BigNoLongerNatural modPow(BigNoLongerNatural exp, BigNoLongerNatural mod) {
-        // montgomery modular multiplication from BigInteger
-//        BigNoLongerNatural base = (this.gt(mod) ? this : this.mod(mod));
-//        if(mod.isOdd()) {
-//            return base.oddModPow(exp, mod);
-//        }
-//        // adapted from BigInteger
-//        int p = mod.getLowestSetBit();
-//        BigNoLongerNatural m1 = mod.shiftLeft(p); // m/2^p
-//        BigNoLongerNatural m2 = one.shiftLeft(p); // 2^p
-//        BigNoLongerNatural base2 = (this.geq(m1) ? this.mod(m1) : this);
-//        BigNoLongerNatural a1 = (m1.equals(one) ? zero : base2.oddModPow(exp, m1));
-//        BigNoLongerNatural a2 = base.modPow2(exp, p);
-//
-//        BigNoLongerNatural y1 = m2.modInverse(m1);
-//        BigNoLongerNatural y2 = m1.modInverse(m2);
-//        return a1.multiply(m2).multiply(y1)
-//                 .add(a2.multiply(m1).multiply(y2))
-//                 .mod(mod);
-
         // https://www.geeksforgeeks.org/modular-exponentiation-power-in-modular-arithmetic/
         if(this.equals(zero)) {
             return zero;
@@ -575,10 +547,6 @@ public class BigNoLongerNatural {
             val = val.multiply(val).mod(mod);
         }
         return ret;
-    }
-
-    public BigNoLongerNatural oddModPow(BigNoLongerNatural exp, BigNoLongerNatural mod) {
-        return one;
     }
 
     // this^exp % 2^p

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
 import java.util.Random;
 
+import static egs.alg.util.BigNoLongerNatural.millerRabinPassed;
 import static egs.alg.util.BigNoLongerNatural.zero;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -103,7 +104,7 @@ class BigNoLongerNaturalTest {
     void naturalIntegerModPowTest() {
         BigNoLongerNatural[] n = new BigNoLongerNatural[3];
         BigInteger[] i = new BigInteger[3];
-        for(int j = 0; j < 1000; j++) {
+        for(int j = 0; j < 100; j++) {
             int bitLength = rng.nextInt(2, 256);
             i[0] = BigInteger.probablePrime(bitLength, rng);
             bitLength = rng.nextInt(2, 256);
@@ -122,31 +123,13 @@ class BigNoLongerNaturalTest {
             for(int i1 = 0; i1 < 3; i1++) {
                 for(int i2 = 0; i2 < 3; i2++) {
                     for(int i3 = 0; i3 < 3; i3++) {
-                        System.out.printf("%d %d %d\n", i1, i2, i3);
+                        //System.out.printf("%d %d %d\n", i1, i2, i3);
                         // modPow
                         assertEquals(i[i1].modPow(i[i2], i[i3]).toString(16),
                                 n[i1].modPow(n[i2], n[i3]).toString());
                     }
                 }
             }
-        }
-    }
-
-
-    @Test
-    void powTestSerial() {
-
-        fail("pow is unimplemented!");
-
-        BigInteger bigI;
-        BigNoLongerNatural bigN;
-        BigNoLongerNatural expN;
-        int bitLength = 64;
-        for(int i = 0; i < 1000; i++) {
-            bigI = BigInteger.probablePrime(bitLength, rng);
-            bigN = new BigNoLongerNatural(bigI.toString(16));
-            expN = new BigNoLongerNatural(i);
-            assertEquals(bigI.pow(i).toString(16), bigN.pow(expN).toString());
         }
     }
 
@@ -173,6 +156,26 @@ class BigNoLongerNaturalTest {
 //                System.out.println("bit: " + j);
                 assertEquals(bigI.testBit(j), bigN.testBit(j));
             }
+        }
+    }
+
+    @Test
+    void probablePrimeTest() {
+        int length = 16;
+        // int bitLength = length * 16;
+        for(int i = 0; i < 1; i++) {
+            BigNoLongerNatural n = BigNoLongerNatural.probablePrime(length);
+            BigInteger in = new BigInteger(n.toString(), 16);
+            assertTrue(in.isProbablePrime(5));
+        }
+    }
+
+    @Test
+    void primeTestTest() {
+        BigNoLongerNatural n1 = new BigNoLongerNatural("97B64C0112AF7D13BA18C0CCC39870A82849F8FC0786E53A9DCBCD");
+        System.out.println(n1);
+        for(int i = 1; i < 20; i++) {
+            System.out.println(millerRabinPassed(n1, i));
         }
     }
 
