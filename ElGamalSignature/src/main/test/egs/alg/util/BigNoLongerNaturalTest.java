@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
 import java.util.Random;
 
+import static egs.alg.util.BigNoLongerNatural.zero;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BigNoLongerNaturalTest {
@@ -72,7 +73,10 @@ class BigNoLongerNaturalTest {
                     // divide
                     assertEquals(i[i1].divide(i[i2]).toString(16), n[i1].divide(n[i2]).toString());
                     // mod
-                    // assertEquals(i[i1].mod(i[i2]).toString(16), n[i1].mod(n[i2]).toString());
+                    if(n[i2].geq(zero)) { // mod >= 0
+                        assertEquals(i[i1].mod(i[i2]).toString(16), n[i1].mod(n[i2]).toString());
+                    }
+
                     // gcd
                     // assertEquals(i[i1].gcd(i[i2]).toString(16), n[i1].gcd(n[i2]).toString());
                 }
@@ -82,11 +86,11 @@ class BigNoLongerNaturalTest {
 
     @Test
     void singleNaturalInteger() {
-        BigInteger bigI1 = new BigInteger("-26e", 16);
-        BigInteger bigI2 = new BigInteger("16", 16);
+        BigInteger bigI1 = new BigInteger("-3690b074", 16);
+        BigInteger bigI2 = new BigInteger( "3702e8f7", 16);
         BigNoLongerNatural bigN1 = new BigNoLongerNatural(bigI1.toString(16));
         BigNoLongerNatural bigN2 = new BigNoLongerNatural(bigI2.toString(16));
-        assertEquals(bigI1.divide(bigI2).toString(16), bigN1.divide(bigN2).toString());
+        assertEquals(bigI1.mod(bigI2).toString(16), bigN1.mod(bigN2).toString());
     }
 
 

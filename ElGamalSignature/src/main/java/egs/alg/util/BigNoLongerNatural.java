@@ -420,7 +420,6 @@ public class BigNoLongerNatural {
         return divide(val, new BigNoLongerNatural(1));
     }
 
-    // negative modulo will return bullshit
     public BigNoLongerNatural mod(BigNoLongerNatural mod) {
         if(mod.equals(one)) {
             return zero;
@@ -470,8 +469,18 @@ public class BigNoLongerNatural {
         if(val.mag.length == 0) {
             throw new ArithmeticException("Division by zero!");
         }
+        if(this.absEq(val)) {
+            reminder.mag = new byte[0];
+            reminder.sign = false;
+            return new BigNoLongerNatural(one.mag, this.sign == val.sign);
+        }
         if(val.absGt(this)) {
-            reminder.mag = this.mag;
+            if(!this.sign) { // this negative
+                reminder.mag = val.add(this).mag;
+            } else {
+                reminder.mag = this.mag;
+            }
+            reminder.sign = true;
             return zero;
         }
         BigNoLongerNatural absVal = new BigNoLongerNatural(val.mag, true);
@@ -499,7 +508,11 @@ public class BigNoLongerNatural {
             result.add(toResult);
         }
         BigNoLongerNatural newReminder = new BigNoLongerNatural(current);
+        if(!this.sign) {
+            newReminder = val.subtract(newReminder);
+        }
         reminder.mag = newReminder.mag;
+        reminder.sign = true;
 
         byte[] ret = new byte[this.mag.length];
         int retIdx = 0;
@@ -736,6 +749,10 @@ public class BigNoLongerNatural {
         BigNoLongerNatural t = new BigNoLongerNatural(this.mag, true);
         BigNoLongerNatural v = new BigNoLongerNatural(val.mag, true);
         return t.gt(v);
+    }
+
+    private boolean absEq(BigNoLongerNatural val) {
+        return Arrays.equals(this.mag, val.mag);
     }
 
 //    public boolean lt(BigNoLongerNatural val) {
