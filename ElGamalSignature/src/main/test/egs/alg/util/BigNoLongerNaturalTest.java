@@ -1,6 +1,5 @@
 package egs.alg.util;
 
-import eu.hansolo.tilesfx.Tile;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -8,77 +7,88 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BigNaturalTest {
+class BigNoLongerNaturalTest {
     int ITER_NUM = 10000000;
 
-    BigNatural a;
-    BigNatural b;
-    BigNatural r = new BigNatural(0);
-    BigNatural result;
-    BigNatural reminder;
+    BigNoLongerNatural a;
+    BigNoLongerNatural b;
+    BigNoLongerNatural r = new BigNoLongerNatural(0);
+    BigNoLongerNatural result;
+    BigNoLongerNatural reminder;
     long toa;
     long tob;
     Random rng = new Random();
 
     @Test
-    void addTestSerial() {
-        long bound = 0x0fffffff;
-        for(int i = 0; i < ITER_NUM; i++) {
-            toa = rng.nextLong(bound);
-            a = new BigNatural(toa);
-            tob = rng.nextLong(bound);
-            b = new BigNatural(tob);
-            result = new BigNatural(toa+tob);
-            assertEquals(result, a.add(b));
+    void constructFromStringTest() {
+        String[] inputs = new String[]{
+                "-abcdef",
+                "7831268375192843471524981209834619284561826",
+                "b1461acb2df34",
+                "-121"
+        };
+        for(String input : inputs) {
+            BigNoLongerNatural a = new BigNoLongerNatural(input);
+            assertEquals(input, a.toString());
         }
     }
 
     @Test
-    void subTestSerial() {
-        long bound = 0x0fffffff;
-        for(int i = 0; i < ITER_NUM; i++) {
-            toa = rng.nextLong(bound);
-            a = new BigNatural(toa);
-            tob = rng.nextLong(bound);
-            b = new BigNatural(tob);
-            result = new BigNatural(toa-tob);
-            assertEquals(result, a.subtract(b));
-        }
-    }
+    void naturalIntegerBasicOpsTest() {
+        BigNoLongerNatural[] n = new BigNoLongerNatural[4];
+        BigInteger[] i = new BigInteger[4];
+        for(int j = 0; j < 1000; j++) {
+            int bitLength = rng.nextInt(2, 256);
+            i[0] = BigInteger.probablePrime(bitLength, rng);
+            bitLength = rng.nextInt(2, 256);
+            i[1] = BigInteger.probablePrime(bitLength, rng);
+            i[2] = i[0].subtract(i[1]);
+            i[3] = i[1].subtract(i[0]);
+            n[0] = new BigNoLongerNatural(i[0].toString(16));
+            n[1] = new BigNoLongerNatural(i[1].toString(16));
+            n[2] = new BigNoLongerNatural(i[2].toString(16));
+            n[3] = new BigNoLongerNatural(i[3].toString(16));
 
-    @Test
-    void mulTestSerial() {
-        long bound = 0x0000ffff;
-        for(int i = 0; i < ITER_NUM; i++) {
-            toa = rng.nextLong(bound);
-            a = new BigNatural(toa);
-            tob = rng.nextLong(bound);
-            b = new BigNatural(tob);
-            result = new BigNatural(toa * tob);
-            assertEquals(result, a.multiply(b));
-        }
-    }
+            System.out.printf("nums: ----- \ni0: %s\ni1: %s\ni2: %s\ni3: %s\n",
+                    i[0].toString(16),
+                    i[1].toString(16),
+                    i[2].toString(16),
+                    i[3].toString(16));
 
-    @Test
-    void divTestSerial() {
-        for(int i = 0; i < ITER_NUM; i++) {
-            toa = rng.nextLong(0x0fffffff);
-            a = new BigNatural(toa);
-            tob = rng.nextLong(0x000fffff);
-            b = new BigNatural(tob);
-            if(tob == 0) {
-                assertThrows(ArithmeticException.class, () -> {
-                    a.divide(b, r);
-                });
-                continue;
+            String si, sn;
+            for(int i1 = 0; i1 < 4; i1++) {
+                for(int i2 = 0; i2 < 4; i2++) {
+                    System.out.printf("%d, %d\n", i1, i2);
+                    // equals
+                    si = i[i2].toString(16);
+                    sn = n[i2].toString();
+                    assertEquals(si, sn);
+                    // add
+                    assertEquals(i[i1].add(i[i2]).toString(16), n[i1].add(n[i2]).toString());
+                    // subtract
+                    assertEquals(i[i1].subtract(i[i2]).toString(16), n[i1].subtract(n[i2]).toString());
+                    // multiply
+                    assertEquals(i[i1].multiply(i[i2]).toString(16), n[i1].multiply(n[i2]).toString());
+                    // divide
+                    // assertEquals(i[i1].divide(i[i2]).toString(16), n[i1].divide(n[i2]).toString());
+                    // mod
+                    // assertEquals(i[i1].mod(i[i2]).toString(16), n[i1].mod(n[i2]).toString());
+                    // gcd
+                    // assertEquals(i[i1].gcd(i[i2]).toString(16), n[i1].gcd(n[i2]).toString());
+                }
             }
-            result = new BigNatural(toa / tob);
-            reminder = new BigNatural(toa % tob);
-//            System.out.printf("a: %s, b: %s, a/b = %s\n", a, b, a.divide(b));
-            assertEquals(result, a.divide(b, r));
-            assertEquals(reminder, r);
         }
     }
+
+    @Test
+    void singleNaturalInteger() {
+        BigInteger bigI1 = new BigInteger("-26e", 16);
+        BigInteger bigI2 = new BigInteger("11", 16);
+        BigNoLongerNatural bigN1 = new BigNoLongerNatural(bigI1.toString(16));
+        BigNoLongerNatural bigN2 = new BigNoLongerNatural(bigI2.toString(16));
+        assertEquals(bigI1.subtract(bigI2).toString(16), bigN1.subtract(bigN2).toString());
+    }
+
 
     @Test
     void powTestSerial() {
@@ -86,25 +96,25 @@ class BigNaturalTest {
         fail("pow is unimplemented!");
 
         BigInteger bigI;
-        BigNatural bigN;
-        BigNatural expN;
+        BigNoLongerNatural bigN;
+        BigNoLongerNatural expN;
         int bitLength = 64;
         for(int i = 0; i < 1000; i++) {
             bigI = BigInteger.probablePrime(bitLength, rng);
-            bigN = new BigNatural(bigI.toString(16));
-            expN = new BigNatural(i);
+            bigN = new BigNoLongerNatural(bigI.toString(16));
+            expN = new BigNoLongerNatural(i);
             assertEquals(bigI.pow(i).toString(16), bigN.pow(expN).toString());
         }
     }
 
     @Test
     void naturalIntegerBinaryOpsTest() {
-        BigNatural bigN;
+        BigNoLongerNatural bigN;
         BigInteger bigI;
         int bitLength = rng.nextInt(256);
         for(int i = 0; i < 1000; i ++) {
             bigI = BigInteger.probablePrime(bitLength, rng);
-            bigN = new BigNatural(bigI.toString(16));
+            bigN = new BigNoLongerNatural(bigI.toString(16));
             int p = rng.nextInt(bitLength/2);
             assertEquals(bigI.toString(16), bigN.toString());
 
@@ -117,16 +127,18 @@ class BigNaturalTest {
             assertEquals(bigI.bitLength(), bigN.bitLength());
             assertEquals(bigI.getLowestSetBit(), bigN.getLowestSetBit());
             for(int j = 0; j < bitLength; j++) {
-                System.out.println("bit: " + j);
+//                System.out.println("bit: " + j);
                 assertEquals(bigI.testBit(j), bigN.testBit(j));
             }
         }
     }
 
+
+
     @Test
     void singleBitTest() {
         BigInteger bigI = new BigInteger("1bbbfaa758e49b1", 16);
-        BigNatural bigN = new BigNatural(bigI.toString(16));
+        BigNoLongerNatural bigN = new BigNoLongerNatural(bigI.toString(16));
 
         System.out.println(bigI.toString(2));
 
@@ -137,21 +149,12 @@ class BigNaturalTest {
         }
     }
 
-    @Test
-    void singleNaturalInteger() {
-        BigInteger bigI = new BigInteger("be83fa33", 16);
-        BigNatural bigN = new BigNatural(bigI.toString(16));
-        int p = 15;
-        assertEquals(bigI.shiftRight(p).toString(16), bigN.shiftRight(p).toString());
-        assertEquals(bigI.shiftLeft(p).toString(16), bigN.shiftLeft(p).toString());
 
-
-    }
 
     @Test
     void compareTestSerial() {
         for(int i = 0; i < ITER_NUM; i++) {
-            a = BigNatural.getRandom(100);
+            a = BigNoLongerNatural.getRandom(100);
             b = a.shiftLeft(1);
 
             assertFalse(b.isOdd());
@@ -161,8 +164,8 @@ class BigNaturalTest {
             assertTrue(b.gt(a));
             assertFalse(a.gt(b));
 
-            assertTrue(a.lt(b));
-            assertFalse(b.lt(a));
+//            assertTrue(a.lt(b));
+//            assertFalse(b.lt(a));
 
             assertTrue(b.geq(a));
             assertFalse(a.geq(b));
@@ -177,6 +180,8 @@ class BigNaturalTest {
     }
 
 
+
+
     /*
      * todo
      * Fails powMod, always actual: 1
@@ -185,19 +190,19 @@ class BigNaturalTest {
     @Test
     void modTestSerial() {
         BigInteger bigI;
-        BigNatural bigN;
+        BigNoLongerNatural bigN;
         BigInteger modI;
-        BigNatural modN;
+        BigNoLongerNatural modN;
         BigInteger expI;
-        BigNatural expN;
+        BigNoLongerNatural expN;
         int bitLength = 64;
         for(int i = 0; i < 1000; i++) {
             bigI = BigInteger.probablePrime(bitLength, rng);
-            bigN = new BigNatural(bigI.toString(16));
+            bigN = new BigNoLongerNatural(bigI.toString(16));
             modI = BigInteger.probablePrime(bitLength, rng);
-            modN = new BigNatural(modI.toString(16));
+            modN = new BigNoLongerNatural(modI.toString(16));
             expI = BigInteger.probablePrime(bitLength, rng);
-            expN = new BigNatural(expI.toString(16));
+            expN = new BigNoLongerNatural(expI.toString(16));
 
             assertEquals(bigI.mod(modI).toString(16), bigN.mod(modN).toString());
             assertEquals(bigI.modPow(expI, modI).toString(16), bigN.modPow(expN, modN).toString());
@@ -212,19 +217,19 @@ class BigNaturalTest {
     @Test
     void powModTestSerial() {
         BigInteger bigI;
-        BigNatural bigN;
+        BigNoLongerNatural bigN;
         BigInteger modI;
-        BigNatural modN;
+        BigNoLongerNatural modN;
         BigInteger expI;
-        BigNatural expN;
+        BigNoLongerNatural expN;
         int bitLength = 64;
         for(int i = 0; i < 1000; i++) {
             bigI = BigInteger.probablePrime(bitLength, rng);
-            bigN = new BigNatural(bigI.toString(16));
+            bigN = new BigNoLongerNatural(bigI.toString(16));
             modI = BigInteger.probablePrime(bitLength, rng);
-            modN = new BigNatural(modI.toString(16));
+            modN = new BigNoLongerNatural(modI.toString(16));
             expI = BigInteger.probablePrime(bitLength, rng);
-            expN = new BigNatural(expI.toString(16));
+            expN = new BigNoLongerNatural(expI.toString(16));
 
             assertEquals(bigI.modPow(expI, modI).toString(16), bigN.modPow(expN, modN).toString());
         }

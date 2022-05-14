@@ -5,10 +5,10 @@ package egs.alg;
 
 
 
-import egs.alg.util.BigNatural;
+import egs.alg.util.BigNoLongerNatural;
 
 public class ElGamal {
-    void sign(byte[] data, BigNatural secKey, BigNatural pubKey) {
+    void sign(byte[] data, BigNoLongerNatural secKey, BigNoLongerNatural pubKey) {
         /*
         // opis algorytmu:
             https://www.brainkart.com/article/The-El-Gamal-and-Digital-Signature-Algorithms_9757/

@@ -1,28 +1,37 @@
 package egs.alg.util;
 
-import java.math.BigInteger;
 import java.util.*;
 
 import static java.lang.Math.*;
 
-public class BigNatural {
-    public static BigNatural zero = new BigNatural(0);
-    public static BigNatural one = new BigNatural(1);
-    public static BigNatural two = new BigNatural(2);
+public class BigNoLongerNatural {
+    public static BigNoLongerNatural zero = new BigNoLongerNatural(0);
+    public static BigNoLongerNatural one = new BigNoLongerNatural(1);
+    public static BigNoLongerNatural two = new BigNoLongerNatural(2);
+    public static BigNoLongerNatural NaN = null;
     public static Random rng = new Random();
 
     private byte[] mag;
+    private boolean sign; // true = +, false = -
+
 
     // ------------------------------ CONSTRUCTORS ---------- //
 
-    public BigNatural(String s) {
+    public BigNoLongerNatural(String s) {
         int idxStr = 0;
+        if(s.charAt(0) == 45) { // 45: -
+            sign = false;
+            idxStr++;
+        } else {
+            sign = true;
+        }
         // Skip leading zeros and compute number of digits in magnitude
         while (idxStr < s.length() && Character.digit(s.charAt(idxStr), 16) == 0) {
             idxStr++;
         }
         if(idxStr == s.length()) { // given string is a zero
             mag = new byte[0];
+            sign = true;
             return;
         }
         // cursor = number of zeros
@@ -53,11 +62,17 @@ public class BigNatural {
         }
     }
 
-    public BigNatural(byte[] mag) {
+    public BigNoLongerNatural(byte[] mag) {
         this.mag = deleteLeadingZeros(mag);
+        sign = true;
     }
 
-    private BigNatural(LinkedList<Byte> nmag) {
+    public BigNoLongerNatural(byte[] mag, boolean sign) {
+        this.mag = deleteLeadingZeros(mag);
+        this.sign = sign;
+    }
+
+    private BigNoLongerNatural(LinkedList<Byte> nmag) {
         if(nmag.size() == 0) {
             mag = new byte[0];
             return;
@@ -71,13 +86,15 @@ public class BigNatural {
             }
         }
         mag = new byte[nmag.size() - zeroIdx];
+        sign = true;
 
         for (int i = 0; i < mag.length; i++, zeroIdx++) {
             mag[i] = nmag.get(zeroIdx); // O(nlogn) fix!!
         }
     }
 
-    public BigNatural(long number) {
+    // long is treated as unsigned
+    public BigNoLongerNatural(long number) {
         if(number == 0) {
             mag = new byte[0];
             return;
@@ -87,27 +104,29 @@ public class BigNatural {
             byteLen++;
         }
         mag = new byte[byteLen];
+        sign = true;
         for(int i = byteLen - 1; i >= 0; i--) {
             mag[i] = (byte) (number >>> ((mag.length - i - 1) * 8));
         }
     }
 
     // ------------------------------ RANDOM ---------- //
+    // NOTE: random functions always return positive
 
-    public static BigNatural getRandom(int length) {
+    public static BigNoLongerNatural getRandom(int length) {
         byte[] new_mag = getRandMag(length);
-        return new BigNatural(new_mag);
+        return new BigNoLongerNatural(new_mag);
     }
 
-    public static BigNatural getRandomOdd(int length) {
+    public static BigNoLongerNatural getRandomOdd(int length) {
         byte[] new_mag = getRandMag(length);
         while(new_mag[length-1] % 2 == 0) {
             new_mag[length-1] = (byte) (rng.nextInt());
         }
-        return new BigNatural(new_mag);
+        return new BigNoLongerNatural(new_mag);
     }
 
-    public static BigNatural getRandom(BigNatural bound) {
+    public static BigNoLongerNatural getRandom(BigNoLongerNatural bound) {
         byte[] new_mag = getRandMag(bound.mag.length);
         while(true) {
             for(int idx = 0; idx < bound.mag.length; idx++) {
@@ -115,10 +134,10 @@ public class BigNatural {
                 if(a > b) {
                     if(b != 0) {
                         new_mag[idx] = (byte) (rng.nextInt(b));
-                        return new BigNatural(new_mag);
+                        return new BigNoLongerNatural(new_mag);
                     }
                 } else if (a < b) {
-                    return new BigNatural(new_mag);
+                    return new BigNoLongerNatural(new_mag);
                 } else {
                     new_mag[idx] = 0;
                 }
@@ -140,15 +159,15 @@ public class BigNatural {
     // ------------------------------ PRIMES ---------- //
 
     // https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/
-    public static BigNatural probablePrime(int length) {
+    public static BigNoLongerNatural probablePrime(int length) {
         if(length <= 2) {
             int rand = rng.nextInt(0xffff);
             while(!isIntPrime(rand)) {
                 rand = rng.nextInt(0xffff);
             }
-            return new BigNatural(rand);
+            return new BigNoLongerNatural(rand);
         }
-        BigNatural p = getLowLevelPrime(length);
+        BigNoLongerNatural p = getLowLevelPrime(length);
         while(!millerRabinPassed(p, 5)) {
             p = getLowLevelPrime(length);
         }
@@ -156,7 +175,7 @@ public class BigNatural {
     }
 
     // todo
-    public BigNatural nextProbablePrime() {
+    public BigNoLongerNatural nextProbablePrime() {
         return null;
     }
 
@@ -168,14 +187,14 @@ public class BigNatural {
             307, 311, 313, 317, 331, 337, 347, 349
     };
 
-    public static BigNatural getLowLevelPrime(int length) {
-        BigNatural p = null;
+    public static BigNoLongerNatural getLowLevelPrime(int length) {
+        BigNoLongerNatural p = null;
         boolean generated = false;
-        while(!generated) {
+        while (!generated) {
             p = getRandomOdd(length);
             generated = true;
-            for(int q : firstPrimes) {
-                if(p.mod(new BigNatural(q)).equals(zero)) {
+            for (int q : firstPrimes) {
+                if (p.mod(new BigNoLongerNatural(q)).equals(zero)) {
                     generated = false;
                 }
             }
@@ -183,16 +202,8 @@ public class BigNatural {
         return p;
     }
 
-    private static boolean isIntPrime(int x) {
-        double bound = sqrt(x);
-        for(int i = 2; i < bound; i++) {
-            if(x % i == 0) return false;
-        }
-        return true;
-    }
-
-    private static boolean millerRabinPassed(BigNatural n, int iterations) {
-        BigNatural d = n.subtract(one); // d = n - 1
+    private static boolean millerRabinPassed(BigNoLongerNatural n, int iterations) {
+        BigNoLongerNatural d = n.subtract(one); // d = n - 1
 
         while (d.mod(two).isOdd())  //  while d % 2 == 0
             d = d.divide(two);      //      d /= 2
@@ -214,15 +225,15 @@ public class BigNatural {
     // returns false if n is probably prime.
     // d is an odd number such that d*2<sup>r</sup>
     // = n-1 for some r >= 1
-    private static boolean millerTest(BigNatural n, BigNatural d) {
+    private static boolean millerTest(BigNoLongerNatural n, BigNoLongerNatural d) {
         // a = random(2, n-2)
-        BigNatural a = getRandom( n.subtract(two) ); // a = random(0, n-2)
-        while(a.lt(two))                        // while a < 2
+        BigNoLongerNatural a = getRandom( n.subtract(two) ); // a = random(0, n-2)
+        while(!a.geq(two))                      // while a < 2
             a = getRandom( n.subtract(two) );   //     a = random(0, n-2)
 
 
-        BigNatural x = a.modPow(d, n); // x = a^d % n
-        BigNatural nMinOne = n.subtract(one);
+        BigNoLongerNatural x = a.modPow(d, n); // x = a^d % n
+        BigNoLongerNatural nMinOne = n.subtract(one);
         if (x.equals(one) || x.equals(nMinOne)) // if (x == 1 || x == n - 1)
             return true;
 
@@ -245,13 +256,23 @@ public class BigNatural {
 
     // ------------------------------ MATH OPERATIONS ---------- //
 
-    public BigNatural add(BigNatural val) {
+    public BigNoLongerNatural add(BigNoLongerNatural val) {
         if(mag.length == 0) {
             return val;
         }
         if(val.mag.length == 0) {
             return this;
         }
+        if(!this.sign && val.sign) { // this negative
+            return val.subtract(new BigNoLongerNatural(this.mag, true));
+        }
+        if(this.sign && !val.sign) { // val negative
+            return this.subtract(new BigNoLongerNatural(val.mag, true));
+        }
+        // both positive - standard
+        // both negative - add same as positive, sign stays the same
+        boolean retSign = this.sign;
+
         byte[] x = this.mag;
         byte[] y = val.mag;
         if(x.length < y.length) {
@@ -289,14 +310,26 @@ public class BigNatural {
             byte[] resized = new byte[x.length + 1];
             System.arraycopy(result, 0, resized, 1, result.length);
             resized[0] = 1;
-            return new BigNatural(resized);
+            return new BigNoLongerNatural(resized, retSign);
         }
-        return new BigNatural(result);
+        return new BigNoLongerNatural(result, retSign);
     }
 
-    public BigNatural subtract(BigNatural val) {
-        if(val.gt(this)) {
+    public BigNoLongerNatural subtract(BigNoLongerNatural val) {
+        if(val.equals(this)) {
             return zero;
+        }
+        if(!val.sign) {
+            return this.add(new BigNoLongerNatural(val.mag, true));
+        }
+        if(!this.sign) {
+            return this.add(new BigNoLongerNatural(val.mag, false));
+        }
+        // this and val positive
+        if(val.gt(this)) {
+            BigNoLongerNatural temp = val.subtract(this);
+            temp.sign = false;
+            return temp;
         }
         int i = this.mag.length - 1;
         int iVal = val.mag.length - 1;
@@ -324,11 +357,10 @@ public class BigNatural {
             result[i] = (byte) (toResult);
             i--;
         }
-        result = deleteLeadingZeros(result);
-        return new BigNatural(result);
+        return new BigNoLongerNatural(result);
     }
 
-    public BigNatural multiply(BigNatural val) {
+    public BigNoLongerNatural multiply(BigNoLongerNatural val) {
         if(mag.length == 0 || val.mag.length == 0) {
             return zero;
         }
@@ -380,42 +412,57 @@ public class BigNatural {
             }
             result[rIdx - i] = (byte) (toResult);
         }
-        BigNatural t = new BigNatural(result);
-        result = deleteLeadingZeros(result);
-        return new BigNatural(result);
+        // if signs are the same result will be positive
+        return new BigNoLongerNatural(result, this.sign == val.sign);
     }
 
-    public BigNatural divide(BigNatural val) {
-        return divide(val, new BigNatural(1));
+    public BigNoLongerNatural divide(BigNoLongerNatural val) {
+        return divide(val, new BigNoLongerNatural(1));
     }
 
-    public BigNatural mod(BigNatural mod) {
+    public BigNoLongerNatural mod(BigNoLongerNatural mod) {
         if(mod.equals(one)) {
             return zero;
         }
-        BigNatural reminder = new BigNatural(1);
+        BigNoLongerNatural reminder = new BigNoLongerNatural(1);
         divide(mod, reminder);
         return reminder;
     }
 
     // this ^ (-1) % mod
-    public BigNatural modInverse(BigNatural mod) {
-        BigNatural modVal = this;
-
-        if (mod.equals(one))
+    // this.gcd(mod) must be equals 1!!!
+    public BigNoLongerNatural modInverse(BigNoLongerNatural mod) {
+        // ponieważ liczby są tylko i wyłącznie dodatnie zaimplementowanie
+        // tego algorytmu w postaci iteracyjnej było niemożliwe
+        if(mod.equals(one))
             return zero;
 
+        BigNoLongerNatural val = this;
         if(mod.geq(this)) {
-            modVal = this.mod(mod);
+            val = this.mod(mod);
         }
 
-        if(modVal.equals(one))
-            return one;
-
+        BigNoLongerNatural modVal = mod;
+        BigNoLongerNatural m0 = mod, x = one, y = zero;
+        BigNoLongerNatural q = null, temp = null;
+        while(val.gt(one)) {
+            q = val.divide(mod);
+            temp = mod;
+            // int q = a / m;
+            // int t = m;
+            // m = a % m;
+            // a = t;
+            // t = y;
+            // y = x - q * y;
+            // x = t;
+        }
+        // if (x < 0)
+        //     x += m0;
+        // return x;
         return one;//todo
     }
 
-    public BigNatural divide(BigNatural val, BigNatural reminder) {
+    public BigNoLongerNatural divide(BigNoLongerNatural val, BigNoLongerNatural reminder) {
         if(val.mag.length == 0) {
             throw new ArithmeticException("Division by zero!");
         }
@@ -431,7 +478,7 @@ public class BigNatural {
             current.addLast(value);
             toResult = 0;
             if(current.size() >= val.mag.length) {
-                BigNatural temp = new BigNatural(current);
+                BigNoLongerNatural temp = new BigNoLongerNatural(current);
                 while(temp.geq(val)) {
                     temp = temp.subtract(val);
                     toResult += 1;
@@ -445,7 +492,7 @@ public class BigNatural {
             }
             result.add(toResult);
         }
-        BigNatural newReminder = new BigNatural(current);
+        BigNoLongerNatural newReminder = new BigNoLongerNatural(current);
         reminder.mag = newReminder.mag;
 
         byte[] ret = new byte[this.mag.length];
@@ -454,13 +501,11 @@ public class BigNatural {
             ret[retIdx] = b;
             retIdx++;
         }
-        ret = deleteLeadingZeros(ret);
-        return new BigNatural(ret);
-
+        return new BigNoLongerNatural(ret);
     }
 
     // todo
-    public BigNatural pow(BigNatural val) {
+    public BigNoLongerNatural pow(BigNoLongerNatural val) {
         if(val == zero) {
             return one;
         }
@@ -468,34 +513,34 @@ public class BigNatural {
     }
 
     // montgomery modular multiplication
-    public BigNatural modPow(BigNatural exp, BigNatural mod) {
-        BigNatural base = (this.gt(mod) ? this : this.mod(mod));
+    public BigNoLongerNatural modPow(BigNoLongerNatural exp, BigNoLongerNatural mod) {
+        BigNoLongerNatural base = (this.gt(mod) ? this : this.mod(mod));
         if(mod.isOdd()) {
             return base.oddModPow(exp, mod);
         }
         // adapted from BigInteger
         int p = mod.getLowestSetBit();
-        BigNatural m1 = mod.shiftLeft(p); // m/2^p
-        BigNatural m2 = one.shiftLeft(p); // 2^p
-        BigNatural base2 = (this.geq(m1) ? this.mod(m1) : this);
-        BigNatural a1 = (m1.equals(one) ? zero : base2.oddModPow(exp, m1));
-        BigNatural a2 = base.modPow2(exp, p);
+        BigNoLongerNatural m1 = mod.shiftLeft(p); // m/2^p
+        BigNoLongerNatural m2 = one.shiftLeft(p); // 2^p
+        BigNoLongerNatural base2 = (this.geq(m1) ? this.mod(m1) : this);
+        BigNoLongerNatural a1 = (m1.equals(one) ? zero : base2.oddModPow(exp, m1));
+        BigNoLongerNatural a2 = base.modPow2(exp, p);
 
-        BigNatural y1 = m2.modInverse(m1);
-        BigNatural y2 = m1.modInverse(m2);
+        BigNoLongerNatural y1 = m2.modInverse(m1);
+        BigNoLongerNatural y2 = m1.modInverse(m2);
         return a1.multiply(m2).multiply(y1)
                  .add(a2.multiply(m1).multiply(y2))
                  .mod(mod);
     }
 
-    public BigNatural oddModPow(BigNatural exp, BigNatural mod) {
+    public BigNoLongerNatural oddModPow(BigNoLongerNatural exp, BigNoLongerNatural mod) {
         return one;
     }
 
     // this^exp % 2^p
-    private BigNatural modPow2(BigNatural exp, int p) {
-        BigNatural result = one;
-        BigNatural baseToPow2 = this.mod2(p);
+    private BigNoLongerNatural modPow2(BigNoLongerNatural exp, int p) {
+        BigNoLongerNatural result = one;
+        BigNoLongerNatural baseToPow2 = this.mod2(p);
         int expOffset = 0;
 
         int limit = exp.bitLength();
@@ -515,7 +560,7 @@ public class BigNatural {
     }
 
     // this % 2^p
-    private BigNatural mod2(int p) {
+    private BigNoLongerNatural mod2(int p) {
         if (bitLength() <= p)
             return this;
 
@@ -528,19 +573,19 @@ public class BigNatural {
         for(int i = idx -1; idx >= 0; idx--) {
             newMag[i] = 0;
         }
-        return new BigNatural(newMag);
+        return new BigNoLongerNatural(newMag);
     }
 
-    public BigNatural gcd(BigNatural val) {
+    public BigNoLongerNatural gcd(BigNoLongerNatural val) {
         if(this == zero) {
             return val;
         }
         if(val == zero) {
             return this;
         }
-        BigNatural a = new BigNatural((mag));
-        BigNatural b = new BigNatural(val.mag);
-        BigNatural r = a.mod(b);
+        BigNoLongerNatural a = new BigNoLongerNatural((mag));
+        BigNoLongerNatural b = new BigNoLongerNatural(val.mag);
+        BigNoLongerNatural r = a.mod(b);
         while(r.gt(zero)) {
             a.mag = b.mag;
             b.mag = r.mag;
@@ -551,7 +596,7 @@ public class BigNatural {
 
     // ------------------------------ BITWISE OPERATORS ---------- //
 
-    public BigNatural shiftRight(int n) {
+    public BigNoLongerNatural shiftRight(int n) {
         int retLen = mag.length - floorDiv(n, 8);
         byte[] newMag = new byte[retLen];
         int mod8 = n % 8;
@@ -563,10 +608,10 @@ public class BigNatural {
                 newMag[i] ^= (byte) (toInt(mag[i - 1]) << negMod8);
             }
         }
-        return new BigNatural(newMag);
+        return new BigNoLongerNatural(newMag);
     }
 
-    public BigNatural shiftLeft(int n) {
+    public BigNoLongerNatural shiftLeft(int n) {
         int retLen = mag.length + (int) ceil(n / 8.f);
         byte[] newMag = new byte[retLen];
         int mod8 = n % 8;
@@ -580,7 +625,7 @@ public class BigNatural {
                 newMag[i] ^= (byte) (toInt(mag[i - 1]) << mod8);
             }
         }
-        return new BigNatural(newMag);
+        return new BigNoLongerNatural(newMag);
     }
 
     // od najmniej znaczącego bitu, tj OD PRAWEJ DO LEWEJ
@@ -634,68 +679,74 @@ public class BigNatural {
     }
 
     public boolean equals(Object o) {
-        if(o instanceof BigNatural val) {
-            return Arrays.equals(mag, val.mag);
+        if(o instanceof BigNoLongerNatural val) {
+            return Arrays.equals(mag, val.mag) && (this.sign == val.sign);
         }
         return false;
     }
 
-    public boolean gt(BigNatural val) {
+    public boolean gt(BigNoLongerNatural val) {
         Boolean ret = greater(val);
         return Objects.requireNonNullElse(ret, false);
     }
 
-    public boolean geq(BigNatural val) {
+    public boolean geq(BigNoLongerNatural val) {
         Boolean ret = greater(val);
         return Objects.requireNonNullElse(ret, true);
     }
 
     // if equals returns null
-    private Boolean greater(BigNatural val){
-        if(this.mag.length > val.mag.length) {
+    private Boolean greater(BigNoLongerNatural val){
+        if(this.sign && !val.sign) {
             return true;
         }
-        if(this.mag.length < val.mag.length) {
+        if(!this.sign && val.sign) {
             return false;
+        }
+        boolean ret = this.sign; // inverse if both negative
+        if(this.mag.length > val.mag.length) {
+            return ret;
+        }
+        if(this.mag.length < val.mag.length) {
+            return !ret;
         }
         for(int i = 0; i < this.mag.length; i++) {
             if(toInt(this.mag[i]) > toInt(val.mag[i])) {
-                return true;
+                return ret;
             } else if(toInt(this.mag[i]) < toInt(val.mag[i])) {
-                return false;
+                return !ret;
             }
         }
-        return null;
+        return null; // equals
     }
 
-    public boolean lt(BigNatural val) {
-        if(this.mag.length < val.mag.length) {
-            return true;
-        }
-        if(this.mag.length > val.mag.length) {
-            return false;
-        }
-        for(int i = 0; i < this.mag.length; i++) {
-            if(toInt(this.mag[i]) < toInt(val.mag[i])) {
-                return true;
-            } else if(toInt(this.mag[i]) > toInt(val.mag[i])) {
-                return false;
-            }
-        }
-        return false; // equal
-    }
+//    public boolean lt(BigNoLongerNatural val) {
+//        if(this.mag.length < val.mag.length) {
+//            return true;
+//        }
+//        if(this.mag.length > val.mag.length) {
+//            return false;
+//        }
+//        for(int i = 0; i < this.mag.length; i++) {
+//            if(toInt(this.mag[i]) < toInt(val.mag[i])) {
+//                return true;
+//            } else if(toInt(this.mag[i]) > toInt(val.mag[i])) {
+//                return false;
+//            }
+//        }
+//        return false; // equal
+//    }
 
     // ------------------------------ DISPLAYING ---------- //
 
     public String toString() {
-        return magToStr(mag);
-    }
-
-    private static String magToStr(byte[] mag) {
         if(mag.length == 0) {
             return "0";
         }
         StringBuilder ret = new StringBuilder();
+        if(!sign) {
+            ret.append("-");
+        }
         for(int i = 0; i < mag.length; i++) {
             int uns = toInt(mag[i]);
             if(uns == 0) {
@@ -730,5 +781,13 @@ public class BigNatural {
     
     private static int toInt(byte b) {
         return Byte.toUnsignedInt(b);
+    }
+
+    private static boolean isIntPrime(int x) {
+        double bound = sqrt(x);
+        for(int i = 2; i < bound; i++) {
+            if(x % i == 0) return false;
+        }
+        return true;
     }
 }
