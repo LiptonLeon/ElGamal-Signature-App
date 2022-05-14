@@ -536,25 +536,45 @@ public class BigNoLongerNatural {
         return zero;
     }
 
-    // montgomery modular multiplication
-    public BigNoLongerNatural modPow(BigNoLongerNatural exp, BigNoLongerNatural mod) {
-        BigNoLongerNatural base = (this.gt(mod) ? this : this.mod(mod));
-        if(mod.isOdd()) {
-            return base.oddModPow(exp, mod);
-        }
-        // adapted from BigInteger
-        int p = mod.getLowestSetBit();
-        BigNoLongerNatural m1 = mod.shiftLeft(p); // m/2^p
-        BigNoLongerNatural m2 = one.shiftLeft(p); // 2^p
-        BigNoLongerNatural base2 = (this.geq(m1) ? this.mod(m1) : this);
-        BigNoLongerNatural a1 = (m1.equals(one) ? zero : base2.oddModPow(exp, m1));
-        BigNoLongerNatural a2 = base.modPow2(exp, p);
 
-        BigNoLongerNatural y1 = m2.modInverse(m1);
-        BigNoLongerNatural y2 = m1.modInverse(m2);
-        return a1.multiply(m2).multiply(y1)
-                 .add(a2.multiply(m1).multiply(y2))
-                 .mod(mod);
+    public BigNoLongerNatural modPow(BigNoLongerNatural exp, BigNoLongerNatural mod) {
+        // montgomery modular multiplication from BigInteger
+//        BigNoLongerNatural base = (this.gt(mod) ? this : this.mod(mod));
+//        if(mod.isOdd()) {
+//            return base.oddModPow(exp, mod);
+//        }
+//        // adapted from BigInteger
+//        int p = mod.getLowestSetBit();
+//        BigNoLongerNatural m1 = mod.shiftLeft(p); // m/2^p
+//        BigNoLongerNatural m2 = one.shiftLeft(p); // 2^p
+//        BigNoLongerNatural base2 = (this.geq(m1) ? this.mod(m1) : this);
+//        BigNoLongerNatural a1 = (m1.equals(one) ? zero : base2.oddModPow(exp, m1));
+//        BigNoLongerNatural a2 = base.modPow2(exp, p);
+//
+//        BigNoLongerNatural y1 = m2.modInverse(m1);
+//        BigNoLongerNatural y2 = m1.modInverse(m2);
+//        return a1.multiply(m2).multiply(y1)
+//                 .add(a2.multiply(m1).multiply(y2))
+//                 .mod(mod);
+
+        // https://www.geeksforgeeks.org/modular-exponentiation-power-in-modular-arithmetic/
+        if(this.equals(zero)) {
+            return zero;
+        }
+        BigNoLongerNatural ret = new BigNoLongerNatural(1);
+        BigNoLongerNatural val = new BigNoLongerNatural(this);
+        BigNoLongerNatural expVal = new BigNoLongerNatural(exp);
+        if(val.gt(mod)) {
+            val = val.mod(mod);
+        }
+        while(expVal.gt(zero)) {
+            if(expVal.isOdd()) {
+                ret = ret.multiply(val).mod(mod);
+            }
+            expVal = expVal.shiftRight(1); // exp /= 2
+            val = val.multiply(val).mod(mod);
+        }
+        return ret;
     }
 
     public BigNoLongerNatural oddModPow(BigNoLongerNatural exp, BigNoLongerNatural mod) {
@@ -700,7 +720,7 @@ public class BigNoLongerNatural {
     // ------------------------------ CONDITIONS ---------- //
 
     public boolean isOdd() {
-        return this.mag[this.mag.length - 1] % 2 == 1;
+        return toInt(this.mag[this.mag.length - 1]) % 2 == 1;
     }
 
     public boolean equals(Object o) {

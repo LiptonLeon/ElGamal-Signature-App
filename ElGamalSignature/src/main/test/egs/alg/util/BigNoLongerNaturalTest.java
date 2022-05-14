@@ -88,13 +88,48 @@ class BigNoLongerNaturalTest {
 
     @Test
     void singleNaturalInteger() {
-        BigInteger bigI1 = new BigInteger("2d3", 16);
-        BigInteger bigI2 = new BigInteger( "ef", 16);
+        BigInteger bigI1 = new BigInteger("107", 16);  // 263
+        BigInteger bigI2 = new BigInteger( "10f", 16); // 271
+        BigInteger bigI3 = new BigInteger( "1f3", 16); // 499
         BigNoLongerNatural bigN1 = new BigNoLongerNatural(bigI1.toString(16));
         BigNoLongerNatural bigN2 = new BigNoLongerNatural(bigI2.toString(16));
+        BigNoLongerNatural bigN3 = new BigNoLongerNatural(bigI3.toString(16));
 
 //        assertEquals(bigI1.subtract(bigI2).toString(16), .subtract(bigN2).toString());
-        assertEquals(bigI1.modInverse(bigI2).toString(16), bigN1.modInverse(bigN2).toString());
+        assertEquals(bigI1.modPow(bigI2, bigI3).toString(16), bigN1.modPow(bigN2, bigN3).toString());
+    }
+
+    @Test
+    void naturalIntegerModPowTest() {
+        BigNoLongerNatural[] n = new BigNoLongerNatural[3];
+        BigInteger[] i = new BigInteger[3];
+        for(int j = 0; j < 1000; j++) {
+            int bitLength = rng.nextInt(2, 256);
+            i[0] = BigInteger.probablePrime(bitLength, rng);
+            bitLength = rng.nextInt(2, 256);
+            i[1] = BigInteger.probablePrime(bitLength, rng);
+            bitLength = rng.nextInt(2, 256);
+            i[2] = BigInteger.probablePrime(bitLength, rng);
+            n[0] = new BigNoLongerNatural(i[0].toString(16));
+            n[1] = new BigNoLongerNatural(i[1].toString(16));
+            n[2] = new BigNoLongerNatural(i[2].toString(16));
+
+            System.out.printf("nums: ----- \ni0: %s\ni1: %s\ni2: %s\n",
+                    i[0].toString(16),
+                    i[1].toString(16),
+                    i[2].toString(16));
+
+            for(int i1 = 0; i1 < 3; i1++) {
+                for(int i2 = 0; i2 < 3; i2++) {
+                    for(int i3 = 0; i3 < 3; i3++) {
+                        System.out.printf("%d %d %d\n", i1, i2, i3);
+                        // modPow
+                        assertEquals(i[i1].modPow(i[i2], i[i3]).toString(16),
+                                n[i1].modPow(n[i2], n[i3]).toString());
+                    }
+                }
+            }
+        }
     }
 
 
@@ -145,10 +180,11 @@ class BigNoLongerNaturalTest {
 
     @Test
     void singleBitTest() {
-        BigInteger bigI = new BigInteger("1bbbfaa758e49b1", 16);
+        BigInteger bigI = new BigInteger("87", 16);
         BigNoLongerNatural bigN = new BigNoLongerNatural(bigI.toString(16));
 
         System.out.println(bigI.toString(2));
+        System.out.println(bigN.isOdd());
 
         assertEquals(bigI.bitLength(), bigN.bitLength());
         for(int j = 0; j < 57; j++) {
