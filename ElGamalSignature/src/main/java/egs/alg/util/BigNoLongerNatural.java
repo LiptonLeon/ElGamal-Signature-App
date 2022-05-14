@@ -72,6 +72,12 @@ public class BigNoLongerNatural {
         this.sign = sign;
     }
 
+    public BigNoLongerNatural(BigNoLongerNatural b) {
+        this.mag = new byte[b.mag.length];
+        System.arraycopy(b.mag, 0, this.mag, 0, b.mag.length);
+        this.sign = b.sign;
+    }
+
     private BigNoLongerNatural(LinkedList<Byte> nmag) {
         if(nmag.size() == 0) {
             mag = new byte[0];
@@ -97,6 +103,7 @@ public class BigNoLongerNatural {
     public BigNoLongerNatural(long number) {
         if(number == 0) {
             mag = new byte[0];
+            sign = true;
             return;
         }
         int byteLen = 0;
@@ -433,36 +440,34 @@ public class BigNoLongerNatural {
     }
 
     // this ^ (-1) % mod
-    // this.gcd(mod) must be equals 1!!!
+    // this.gcd(mod) must equals 1!!!
     public BigNoLongerNatural modInverse(BigNoLongerNatural mod) {
-        // ponieważ liczby są tylko i wyłącznie dodatnie zaimplementowanie
-        // tego algorytmu w postaci iteracyjnej było niemożliwe
         if(mod.equals(one))
             return zero;
-
-        BigNoLongerNatural val = this;
+        if(!mod.sign) {
+            return NaN;
+        }
+        // val, modVal are mutable
+        BigNoLongerNatural val = new BigNoLongerNatural(this);
         if(mod.geq(this)) {
             val = this.mod(mod);
         }
-
-        BigNoLongerNatural modVal = mod;
-        BigNoLongerNatural m0 = mod, x = one, y = zero;
-        BigNoLongerNatural q = null, temp = null;
+        BigNoLongerNatural modVal = new BigNoLongerNatural(mod);
+        BigNoLongerNatural x = new BigNoLongerNatural(one);
+        BigNoLongerNatural y = new BigNoLongerNatural(zero);
         while(val.gt(one)) {
-            q = val.divide(mod);
-            temp = mod;
-            // int q = a / m;
-            // int t = m;
-            // m = a % m;
-            // a = t;
-            // t = y;
-            // y = x - q * y;
-            // x = t;
+            BigNoLongerNatural reminder = new BigNoLongerNatural(1);
+            BigNoLongerNatural q = val.divide(modVal, reminder); // reminder goes to modVal
+            BigNoLongerNatural t1 = modVal;
+            modVal = reminder;
+            val = t1;
+            BigNoLongerNatural t2 = y;
+            y = x.subtract(q.multiply(y));
+            x = t2;
         }
-        // if (x < 0)
-        //     x += m0;
-        // return x;
-        return one;//todo
+        if(!x.geq(zero)) // x < 0
+            x = x.add(mod);
+        return x;
     }
 
     public BigNoLongerNatural divide(BigNoLongerNatural val, BigNoLongerNatural reminder) {
@@ -595,6 +600,7 @@ public class BigNoLongerNatural {
         return new BigNoLongerNatural(newMag);
     }
 
+    // największy wspólny dzielnik
     public BigNoLongerNatural gcd(BigNoLongerNatural val) {
         if(this == zero) {
             return val;
@@ -754,23 +760,6 @@ public class BigNoLongerNatural {
     private boolean absEq(BigNoLongerNatural val) {
         return Arrays.equals(this.mag, val.mag);
     }
-
-//    public boolean lt(BigNoLongerNatural val) {
-//        if(this.mag.length < val.mag.length) {
-//            return true;
-//        }
-//        if(this.mag.length > val.mag.length) {
-//            return false;
-//        }
-//        for(int i = 0; i < this.mag.length; i++) {
-//            if(toInt(this.mag[i]) < toInt(val.mag[i])) {
-//                return true;
-//            } else if(toInt(this.mag[i]) > toInt(val.mag[i])) {
-//                return false;
-//            }
-//        }
-//        return false; // equal
-//    }
 
     // ------------------------------ DISPLAYING ---------- //
 

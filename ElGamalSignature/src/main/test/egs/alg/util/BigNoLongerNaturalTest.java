@@ -80,16 +80,21 @@ class BigNoLongerNaturalTest {
                     }
                 }
             }
+            // modInverse
+            assertEquals(i[0].modInverse(i[1]).toString(16), n[0].modInverse(n[1]).toString());
+            assertEquals(i[1].modInverse(i[0]).toString(16), n[1].modInverse(n[0]).toString());
         }
     }
 
     @Test
     void singleNaturalInteger() {
-        BigInteger bigI1 = new BigInteger("-3690b074", 16);
-        BigInteger bigI2 = new BigInteger( "3702e8f7", 16);
+        BigInteger bigI1 = new BigInteger("2d3", 16);
+        BigInteger bigI2 = new BigInteger( "ef", 16);
         BigNoLongerNatural bigN1 = new BigNoLongerNatural(bigI1.toString(16));
         BigNoLongerNatural bigN2 = new BigNoLongerNatural(bigI2.toString(16));
-        assertEquals(bigI1.mod(bigI2).toString(16), bigN1.mod(bigN2).toString());
+
+//        assertEquals(bigI1.subtract(bigI2).toString(16), .subtract(bigN2).toString());
+        assertEquals(bigI1.modInverse(bigI2).toString(16), bigN1.modInverse(bigN2).toString());
     }
 
 
