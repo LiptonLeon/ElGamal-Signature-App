@@ -70,7 +70,7 @@ class BigNoLongerNaturalTest {
                     // multiply
                     assertEquals(i[i1].multiply(i[i2]).toString(16), n[i1].multiply(n[i2]).toString());
                     // divide
-                    // assertEquals(i[i1].divide(i[i2]).toString(16), n[i1].divide(n[i2]).toString());
+                    assertEquals(i[i1].divide(i[i2]).toString(16), n[i1].divide(n[i2]).toString());
                     // mod
                     // assertEquals(i[i1].mod(i[i2]).toString(16), n[i1].mod(n[i2]).toString());
                     // gcd
@@ -83,10 +83,10 @@ class BigNoLongerNaturalTest {
     @Test
     void singleNaturalInteger() {
         BigInteger bigI1 = new BigInteger("-26e", 16);
-        BigInteger bigI2 = new BigInteger("11", 16);
+        BigInteger bigI2 = new BigInteger("16", 16);
         BigNoLongerNatural bigN1 = new BigNoLongerNatural(bigI1.toString(16));
         BigNoLongerNatural bigN2 = new BigNoLongerNatural(bigI2.toString(16));
-        assertEquals(bigI1.subtract(bigI2).toString(16), bigN1.subtract(bigN2).toString());
+        assertEquals(bigI1.divide(bigI2).toString(16), bigN1.divide(bigN2).toString());
     }
 
 

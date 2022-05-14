@@ -420,9 +420,13 @@ public class BigNoLongerNatural {
         return divide(val, new BigNoLongerNatural(1));
     }
 
+    // negative modulo will return bullshit
     public BigNoLongerNatural mod(BigNoLongerNatural mod) {
         if(mod.equals(one)) {
             return zero;
+        }
+        if(!mod.gt(zero)) { // mod < 0
+            return NaN;
         }
         BigNoLongerNatural reminder = new BigNoLongerNatural(1);
         divide(mod, reminder);
@@ -466,10 +470,11 @@ public class BigNoLongerNatural {
         if(val.mag.length == 0) {
             throw new ArithmeticException("Division by zero!");
         }
-        if(val.gt(this)) {
+        if(val.absGt(this)) {
             reminder.mag = this.mag;
             return zero;
         }
+        BigNoLongerNatural absVal = new BigNoLongerNatural(val.mag, true);
         LinkedList<Byte> current = new LinkedList<>();
         LinkedList<Byte> result = new LinkedList<>();
         byte toResult;
@@ -479,8 +484,9 @@ public class BigNoLongerNatural {
             toResult = 0;
             if(current.size() >= val.mag.length) {
                 BigNoLongerNatural temp = new BigNoLongerNatural(current);
-                while(temp.geq(val)) {
-                    temp = temp.subtract(val);
+
+                while(temp.geq(absVal)) {
+                    temp = temp.subtract(absVal);
                     toResult += 1;
                 }
                 if(toResult != 0) {
@@ -501,7 +507,7 @@ public class BigNoLongerNatural {
             ret[retIdx] = b;
             retIdx++;
         }
-        return new BigNoLongerNatural(ret);
+        return new BigNoLongerNatural(ret, this.sign == val.sign);
     }
 
     // todo
@@ -720,6 +726,18 @@ public class BigNoLongerNatural {
         return null; // equals
     }
 
+    private boolean absGeq(BigNoLongerNatural val) {
+        BigNoLongerNatural t = new BigNoLongerNatural(this.mag, true);
+        BigNoLongerNatural v = new BigNoLongerNatural(val.mag, true);
+        return t.geq(v);
+    }
+
+    private boolean absGt(BigNoLongerNatural val) {
+        BigNoLongerNatural t = new BigNoLongerNatural(this.mag, true);
+        BigNoLongerNatural v = new BigNoLongerNatural(val.mag, true);
+        return t.gt(v);
+    }
+
 //    public boolean lt(BigNoLongerNatural val) {
 //        if(this.mag.length < val.mag.length) {
 //            return true;
@@ -764,6 +782,9 @@ public class BigNoLongerNatural {
     // ------------------------------ VARIOUS COMMON FUNCTIONS ---------- //
 
     private byte[] deleteLeadingZeros(byte[] arr) {
+        if(arr.length == 0) {
+            return arr;
+        }
         int idxNotZero = 0;
         while(arr[idxNotZero] == 0) {
             idxNotZero++;
