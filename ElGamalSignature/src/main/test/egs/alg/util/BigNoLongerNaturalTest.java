@@ -72,13 +72,12 @@ class BigNoLongerNaturalTest {
                     assertEquals(i[i1].multiply(i[i2]).toString(16), n[i1].multiply(n[i2]).toString());
                     // divide
                     assertEquals(i[i1].divide(i[i2]).toString(16), n[i1].divide(n[i2]).toString());
-                    // mod
                     if(n[i2].geq(zero)) { // mod >= 0
+                        // mod
                         assertEquals(i[i1].mod(i[i2]).toString(16), n[i1].mod(n[i2]).toString());
+                        // gcd
+                        assertEquals(i[i1].gcd(i[i2]).toString(16), n[i1].gcd(n[i2]).toString());
                     }
-
-                    // gcd
-                    // assertEquals(i[i1].gcd(i[i2]).toString(16), n[i1].gcd(n[i2]).toString());
                 }
             }
         }
