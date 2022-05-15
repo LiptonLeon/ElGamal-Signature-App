@@ -47,7 +47,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <TextArea maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="254.0" VBox.vgrow="ALWAYS">
+            <TextArea fx:id="textField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="254.0" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
@@ -84,7 +84,7 @@
             <Insets left="50.0" />
          </GridPane.margin>
          <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" styleClass="labelGradient" text="Podpis cyfrowy" textAlignment="CENTER" />
-         <TextArea maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="261.0" VBox.vgrow="ALWAYS">
+         <TextArea fx:id="signField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="261.0" VBox.vgrow="ALWAYS">
             <VBox.margin>
                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </VBox.margin>
@@ -170,7 +170,7 @@
                      <Font size="14.0" />
                   </font>
                </Label>
-               <TextField maxWidth="1.7976931348623157E308" prefHeight="37.0" prefWidth="900.0" HBox.hgrow="ALWAYS">
+               <TextField fx:id="gKeyField" maxWidth="1.7976931348623157E308" prefHeight="37.0" prefWidth="900.0" HBox.hgrow="ALWAYS">
                   <HBox.margin>
                      <Insets />
                   </HBox.margin>
@@ -188,7 +188,7 @@
                      <Font size="14.0" />
                   </font>
                </Label>
-               <TextField maxWidth="1.7976931348623157E308" prefHeight="37.0" prefWidth="900.0" HBox.hgrow="ALWAYS">
+               <TextField fx:id="hKeyField" maxWidth="1.7976931348623157E308" prefHeight="37.0" prefWidth="900.0" HBox.hgrow="ALWAYS">
                   <HBox.margin>
                      <Insets />
                   </HBox.margin>
@@ -206,7 +206,7 @@
                      <Font size="14.0" />
                   </font>
                </Label>
-               <TextField maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="613.0" HBox.hgrow="ALWAYS">
+               <TextField fx:id="aKeyField" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="613.0" HBox.hgrow="ALWAYS">
                   <HBox.margin>
                      <Insets />
                   </HBox.margin>
@@ -224,7 +224,7 @@
                      <Font size="14.0" />
                   </font>
                </Label>
-               <TextField maxWidth="1.7976931348623157E308" prefHeight="54.0" prefWidth="900.0" HBox.hgrow="ALWAYS">
+               <TextField fx:id="modNField" maxWidth="1.7976931348623157E308" prefHeight="54.0" prefWidth="900.0" HBox.hgrow="ALWAYS">
                   <HBox.margin>
                      <Insets />
                   </HBox.margin>

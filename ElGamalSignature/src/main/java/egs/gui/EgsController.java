@@ -1,9 +1,16 @@
 package egs.gui;
 
+import egs.alg.ElGamal;
+import egs.alg.util.FileIO;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -11,10 +18,26 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
+import java.util.ResourceBundle;
+import java.util.Scanner;
 
-public class EgsController {
+import org.apache.commons.io.*;
+
+public class EgsController implements Initializable {
+
+    // ElGamal
+    private final ElGamal elGamal = new ElGamal();
+
+    // Strings
+    private final StringProperty gKey = new SimpleStringProperty();
+    private final StringProperty hKey = new SimpleStringProperty();
+    private final StringProperty aKey = new SimpleStringProperty();
+    private final StringProperty modN = new SimpleStringProperty();
+    private final StringProperty text = new SimpleStringProperty();
+    private final StringProperty sign = new SimpleStringProperty();
+    private String fileText;
 
     @FXML
     public ToggleGroup input;
@@ -28,8 +51,37 @@ public class EgsController {
     @FXML
     private Label keyPath;
 
+    @FXML
+    private TextField gKeyField;
+
+    @FXML
+    private TextField hKeyField;
+
+    @FXML
+    private TextField aKeyField;
+
+    @FXML
+    private TextField modNField;
+
+    @FXML
+    private TextArea textField;
+
+    @FXML
+    private TextArea signField;
+
     private final FileChooser fileChooser = new FileChooser();
     private Stage stage;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Bind TextFields with properties
+        gKeyField.textProperty().bindBidirectional(gKey);
+        hKeyField.textProperty().bindBidirectional(hKey);
+        aKeyField.textProperty().bindBidirectional(aKey);
+        modNField.textProperty().bindBidirectional(modN);
+        textField.textProperty().bindBidirectional(text);
+        signField.textProperty().bindBidirectional(sign);
+    }
 
     // FXResizeHelper can be initialized after passing stage to controller
     public void setStage(Stage stage) {
@@ -52,10 +104,10 @@ public class EgsController {
         stage.setIconified(true);
     }
 
-    public void onTextLoad() {
+    public void onTextLoad() throws IOException {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            //TODO: Load text
+            FileUtils.readFileToString(file, fileText);
             textPath.setText(file.getPath());
         }
     }
@@ -68,10 +120,10 @@ public class EgsController {
 //        }
 //    }
 
-    public void onSignLoad() {
+    public void onSignLoad() throws IOException {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            //TODO: Load signature
+            sign.setValue(FileIO.getFileContentString(file.getPath()));
             signPath.setText(file.getPath());
         }
     }
@@ -79,7 +131,11 @@ public class EgsController {
     public void onSignSave() {
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
-            //TODO: Save signature
+            try {
+                FileUtils.writeStringToFile(file, fileText);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             signPath.setText(file.getPath());
         }
     }
@@ -87,7 +143,15 @@ public class EgsController {
     public void onKeyLoad() {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            //TODO: Load keys
+            try {
+                Scanner scanner = new Scanner(file);
+                gKey.setValue(scanner.nextLine());
+                hKey.setValue(scanner.nextLine());
+                aKey.setValue(scanner.nextLine());
+                modN.setValue(scanner.nextLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             keyPath.setText(file.getPath());
         }
     }
@@ -95,7 +159,19 @@ public class EgsController {
     public void onKeySave() {
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
-            //TODO: Save keys
+            try {
+                Writer writer = new FileWriter(file);
+                writer.write(gKey.getValue());
+                writer.write("\n");
+                writer.write(hKey.getValue());
+                writer.write("\n");
+                writer.write(aKey.getValue());
+                writer.write("\n");
+                writer.write(modN.getValue());
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             keyPath.setText(file.getPath());
         }
     }

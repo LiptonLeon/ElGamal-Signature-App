@@ -1,13 +1,10 @@
 package egs.alg;
 
 import egs.alg.util.BigNoLongerNatural;
-
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import static egs.alg.util.BigNoLongerNatural.one;
-import static egs.alg.util.BigNoLongerNatural.zero;
 
 public class ElGamal {
 
@@ -18,7 +15,7 @@ public class ElGamal {
 
     MessageDigest md;
 
-    ElGamal() {
+    public ElGamal() {
         bitLength = 256;
         try {
             md = MessageDigest.getInstance("SHA-256");
@@ -57,7 +54,7 @@ public class ElGamal {
     }
 
     void generateKeys() {
-        generateKeys(64);
+        generateKeys(256);
     }
 
     void generateKeys(int bitLength) {
