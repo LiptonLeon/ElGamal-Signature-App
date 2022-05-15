@@ -14,7 +14,7 @@ public class EgsApplication extends Application {
     public void start(Stage stage) throws IOException {
         System.setProperty("prism.lcdtext", "false");
         stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setOpacity(0.95);
+        stage.setOpacity(0.96);
         stage.setMinHeight(500);
         stage.setMinWidth(520);
 

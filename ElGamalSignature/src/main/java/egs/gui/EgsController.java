@@ -119,19 +119,15 @@ public class EgsController implements Initializable {
         }
     }
 
-//    public void onTextSave() {
-//        File file = fileChooser.showSaveDialog(stage);
-//        if (file != null) {
-//            //TODO: Save text
-//            textPath.setText(file.getPath());
-//        }
-//    }
-
-    public void onSignLoad() throws IOException {
+    public void onSignLoad() {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            sign.setValue(FileIO.getFileContentString(file.getPath()));
-            signPath.setText(file.getPath());
+            try {
+                sign.setValue(FileIO.getFileContentString(file.getPath()));
+                signPath.setText(file.getPath());
+            } catch (IOException e) {
+                openPopup("Bład odczytu\npodpisu!");
+            }
         }
     }
 
@@ -143,7 +139,7 @@ public class EgsController implements Initializable {
                 writer.write(sign.getValue());
                 writer.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                openPopup("Bład zapisu\npodpisu!");
             }
             signPath.setText(file.getPath());
         }
@@ -167,7 +163,7 @@ public class EgsController implements Initializable {
                 aKey.setValue(scanner.nextLine());
                 modN.setValue(scanner.nextLine());
             } catch (IOException e) {
-                e.printStackTrace();
+                openPopup("Bład odczytu\nkluczy!");
             }
             keyPath.setText(file.getPath());
         }
@@ -187,7 +183,7 @@ public class EgsController implements Initializable {
                 writer.write(modN.getValue());
                 writer.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                openPopup("Bład zapisu\nkluczy!");
             }
             keyPath.setText(file.getPath());
         }
@@ -204,10 +200,14 @@ public class EgsController implements Initializable {
         byte[] text = getTextSource();
         if(text == null) return;
 
-        // Sign text
-        BigNoLongerNatural[] signBig = elGamal.sign(text);
-        sign.setValue(signBig[0].toString() + "\n" + signBig[1]);
-        openPopup("Podpisano!");
+        // Sign text (corrupted keys may cause exception)
+        try {
+            BigNoLongerNatural[] signBig = elGamal.sign(text);
+            sign.setValue(signBig[0].toString() + "\n" + signBig[1]);
+            openPopup("Podpisano!");
+        } catch (NullPointerException e) {
+            openPopup("Popsute klucze!");
+        }
     }
 
     public void onVerifyAction() {
@@ -227,13 +227,19 @@ public class EgsController implements Initializable {
         byte[] text = getTextSource();
         if(text == null) return;
 
-        // Check file with signature
-        String[] signSplit = sign.getValue().split("\n");
-        BigNoLongerNatural[] signBig = {new BigNoLongerNatural(signSplit[0]), new BigNoLongerNatural(signSplit[1])};
-        if(elGamal.verify(text, signBig))
-            openPopup("Podpis zgodny!");
-        else
-            openPopup("Podpis niezgodny");
+        // Check file with signature (corrupted keys or sign may cause exception)
+        try {
+            String[] signSplit = sign.getValue().split("\n");
+            BigNoLongerNatural[] signBig = {new BigNoLongerNatural(signSplit[0]), new BigNoLongerNatural(signSplit[1])};
+            if (elGamal.verify(text, signBig))
+                openPopup("Podpis zgodny!");
+            else
+                openPopup("Podpis niezgodny!");
+        } catch (NullPointerException e) {
+            openPopup("Popsute klucze!");
+        } catch (NumberFormatException e) {
+            openPopup("Popsuty podpis!");
+        }
     }
 
     // Return byte[] of text from TextArea or from file
@@ -255,6 +261,7 @@ public class EgsController implements Initializable {
         return text;
     }
 
+    // Check if keys are missing
     private boolean missingKeys() {
         return gKey.getValue().isEmpty() ||
                 hKey.getValue().isEmpty() ||
@@ -262,21 +269,26 @@ public class EgsController implements Initializable {
                 modN.getValue().isEmpty();
     }
 
+    // Create popup with a message
     private void openPopup(String info) {
         Stage popupStage = new Stage();
         popupStage.initStyle(StageStyle.TRANSPARENT);
         popupStage.setOpacity(0.95);
         popupStage.initModality(Modality.APPLICATION_MODAL);
-
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(EgsApplication.class.getResource("popup-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             scene.setFill(Color.TRANSPARENT);
             popupStage.setScene(scene);
             ((PopupController) fxmlLoader.getController()).setInfo(info);
+            ((PopupController) fxmlLoader.getController()).setStr(gKey.getValue());
             popupStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void onAbout() {
+        openPopup("Autorzy:\nKrystian Baraniecki\nJan Rubacha");
     }
 }
