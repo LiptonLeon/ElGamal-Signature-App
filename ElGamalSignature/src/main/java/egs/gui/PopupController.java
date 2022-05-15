@@ -73,6 +73,7 @@ public class PopupController {
             case "kapsle" -> setInfo("Kapsle racing:\nliptonleon.itch.io/\nkapsle-racing");
             case "418" -> setInfo("I'm a teapot!");
             case "studia" -> setInfo("Kto normalny daje\neaster eggi do\nprogramu na zaliczenie?");
+            case "creeper" -> setInfo("Sssssssss\n\nBOOM!");
         }
     }
 }

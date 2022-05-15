@@ -35,6 +35,10 @@ public class EgsController implements Initializable {
     private final StringProperty sign = new SimpleStringProperty();
     private byte[] fileText;
 
+    //File choosers
+    private final FileChooser keyChooser = new FileChooser();
+    private final FileChooser signChooser = new FileChooser();
+
     @FXML
     private ToggleGroup input;
 
@@ -88,6 +92,13 @@ public class EgsController implements Initializable {
         hKey.setValue("");
         aKey.setValue("");
         modN.setValue("");
+
+        //Extenstion filters for FileChoosers
+        FileChooser.ExtensionFilter defaultExt = new FileChooser.ExtensionFilter("Inny plik (*.*)", "*.*");
+        keyChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Plik z kluczami (*.key)", "*.key"));
+        keyChooser.getExtensionFilters().add(defaultExt);
+        signChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Plik z podpisem (*.sign)", "*.sign"));
+        signChooser.getExtensionFilters().add(defaultExt);
     }
 
     // FXResizeHelper can be initialized after passing stage to controller
@@ -120,7 +131,7 @@ public class EgsController implements Initializable {
     }
 
     public void onSignLoad() {
-        File file = fileChooser.showOpenDialog(stage);
+        File file = signChooser.showOpenDialog(stage);
         if (file != null) {
             try {
                 sign.setValue(FileIO.getFileContentString(file.getPath()));
@@ -132,7 +143,7 @@ public class EgsController implements Initializable {
     }
 
     public void onSignSave() {
-        File file = fileChooser.showSaveDialog(stage);
+        File file = signChooser.showSaveDialog(stage);
         if (file != null) {
             try {
                 Writer writer = new FileWriter(file);
@@ -154,7 +165,7 @@ public class EgsController implements Initializable {
     }
 
     public void onKeyLoad() {
-        File file = fileChooser.showOpenDialog(stage);
+        File file = keyChooser.showOpenDialog(stage);
         if (file != null) {
             try {
                 Scanner scanner = new Scanner(file);
@@ -170,7 +181,7 @@ public class EgsController implements Initializable {
     }
 
     public void onKeySave() {
-        File file = fileChooser.showSaveDialog(stage);
+        File file = keyChooser.showSaveDialog(stage);
         if (file != null) {
             try {
                 Writer writer = new FileWriter(file);
