@@ -22,7 +22,6 @@ public class ElGamal {
         } catch (NoSuchAlgorithmException e) {
             // ignore
         }
-        generateKeys(bitLength);
     }
 
     // getRandom(bound) zwraca liczbę z przedziału 1 <= r < bound

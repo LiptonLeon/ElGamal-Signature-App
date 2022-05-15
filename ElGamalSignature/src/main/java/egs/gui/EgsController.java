@@ -84,12 +84,10 @@ public class EgsController implements Initializable {
         // Prevent NPE during sign/verify
         text.setValue("");
         sign.setValue("");
-
-        // ElGamal generates keys in constructor
-        gKey.setValue(elGamal.g.toString());
-        hKey.setValue(elGamal.h.toString());
-        aKey.setValue(elGamal.a.toString());
-        modN.setValue(elGamal.p.toString());
+        gKey.setValue("");
+        hKey.setValue("");
+        aKey.setValue("");
+        modN.setValue("");
     }
 
     // FXResizeHelper can be initialized after passing stage to controller
