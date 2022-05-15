@@ -23,8 +23,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
-import org.apache.commons.io.*;
-
 public class EgsController implements Initializable {
 
     // ElGamal
@@ -107,7 +105,7 @@ public class EgsController implements Initializable {
     public void onTextLoad() throws IOException {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            FileUtils.readFileToString(file, fileText);
+            fileText = FileIO.getFileContentString(file.getPath());
             textPath.setText(file.getPath());
         }
     }
@@ -132,7 +130,9 @@ public class EgsController implements Initializable {
         File file = fileChooser.showSaveDialog(stage);
         if (file != null) {
             try {
-                FileUtils.writeStringToFile(file, fileText);
+                Writer writer = new FileWriter(file);
+                writer.write(sign.getValue());
+                writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
