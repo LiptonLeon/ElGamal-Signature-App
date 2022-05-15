@@ -137,7 +137,7 @@
                <Font size="13.0" />
             </font>
          </Button>
-         <RadioButton mnemonicParsing="false" prefHeight="19.0" prefWidth="70.0" selected="true" text="Tekst" textFill="WHITE">
+         <RadioButton fx:id="radioText" mnemonicParsing="false" prefHeight="19.0" prefWidth="70.0" selected="true" text="Tekst" textFill="WHITE">
             <font>
                <Font size="13.0" />
             </font>
@@ -145,7 +145,7 @@
                <ToggleGroup fx:id="input" />
             </toggleGroup>
          </RadioButton>
-         <RadioButton mnemonicParsing="false" prefHeight="19.0" prefWidth="70.0" text="Plik" textFill="WHITE" toggleGroup="$input">
+         <RadioButton fx:id="radioFile" mnemonicParsing="false" prefHeight="19.0" prefWidth="70.0" text="Plik" textFill="WHITE" toggleGroup="$input">
             <font>
                <Font size="13.0" />
             </font>
@@ -237,7 +237,7 @@
                <VBox.margin>
                   <Insets />
                </VBox.margin>
-               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" text="Wygeneruj klucze">
+               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onKeyGenerate" prefHeight="30.0" prefWidth="120.0" text="Wygeneruj klucze">
                   <HBox.margin>
                      <Insets left="-1.0" />
                   </HBox.margin>

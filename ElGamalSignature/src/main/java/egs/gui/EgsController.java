@@ -1,6 +1,7 @@
 package egs.gui;
 
 import egs.alg.ElGamal;
+import egs.alg.util.BigNoLongerNatural;
 import egs.alg.util.FileIO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -8,10 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -35,10 +33,13 @@ public class EgsController implements Initializable {
     private final StringProperty modN = new SimpleStringProperty();
     private final StringProperty text = new SimpleStringProperty();
     private final StringProperty sign = new SimpleStringProperty();
-    private String fileText;
+    private byte[] fileText;
 
     @FXML
-    public ToggleGroup input;
+    private ToggleGroup input;
+
+    @FXML
+    private RadioButton radioText;
 
     @FXML
     private Label textPath;
@@ -79,6 +80,16 @@ public class EgsController implements Initializable {
         modNField.textProperty().bindBidirectional(modN);
         textField.textProperty().bindBidirectional(text);
         signField.textProperty().bindBidirectional(sign);
+
+        // Prevent NPE during sign/verify
+        text.setValue("");
+        sign.setValue("");
+
+        // ElGamal generates keys in constructor
+        gKey.setValue(elGamal.g.toString());
+        hKey.setValue(elGamal.h.toString());
+        aKey.setValue(elGamal.a.toString());
+        modN.setValue(elGamal.p.toString());
     }
 
     // FXResizeHelper can be initialized after passing stage to controller
@@ -105,7 +116,7 @@ public class EgsController implements Initializable {
     public void onTextLoad() throws IOException {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            fileText = FileIO.getFileContentString(file.getPath());
+            fileText = FileIO.getFileContentBytes(file.getPath());
             textPath.setText(file.getPath());
         }
     }
@@ -138,6 +149,14 @@ public class EgsController implements Initializable {
             }
             signPath.setText(file.getPath());
         }
+    }
+
+    public void onKeyGenerate() {
+        elGamal.generateKeys();
+        gKey.setValue(elGamal.g.toString());
+        hKey.setValue(elGamal.h.toString());
+        aKey.setValue(elGamal.a.toString());
+        modN.setValue(elGamal.p.toString());
     }
 
     public void onKeyLoad() {
@@ -177,11 +196,72 @@ public class EgsController implements Initializable {
     }
 
     public void onSignAction() {
-        openPopup("Podpisywanie\nniezaimplementowane!");
+        // Abort if keys are missing
+        if(missingKeys()) {
+            openPopup("Brak kluczy!");
+            return;
+        }
+
+        // Try to get text, abort if fail
+        byte[] text = getTextSource();
+        if(text == null) return;
+
+        // Sign text
+        BigNoLongerNatural[] signBig = elGamal.sign(text);
+        sign.setValue(signBig[0].toString() + "\n" + signBig[1]);
+        openPopup("Podpisano!");
     }
 
     public void onVerifyAction() {
-        openPopup("Weryfikacja niezaimplementowana!");
+        // Abort if keys are missing
+        if(missingKeys()) {
+            openPopup("Brak kluczy!");
+            return;
+        }
+
+        // Abort when no signature
+        if(sign.getValue().isEmpty()) {
+            openPopup("Brak podpisu!");
+            return;
+        }
+
+        // Try to get text, abort if fail
+        byte[] text = getTextSource();
+        if(text == null) return;
+
+        // Check file with signature
+        String[] signSplit = sign.getValue().split("\n");
+        BigNoLongerNatural[] signBig = {new BigNoLongerNatural(signSplit[0]), new BigNoLongerNatural(signSplit[1])};
+        if(elGamal.verify(text, signBig))
+            openPopup("Podpis zgodny!");
+        else
+            openPopup("Podpis niezgodny");
+    }
+
+    // Return byte[] of text from TextArea or from file
+    private byte[] getTextSource() {
+        byte[] text;
+        if(input.getSelectedToggle() == radioText) {
+            if(textField.getText().isEmpty()) {
+                openPopup("Brak tekstu!");
+                return null;
+            }
+            text = GuiUtil.stringToByteArray(textField.getText());
+        } else {
+            if(fileText == null) {
+                openPopup("Brak pliku!");
+                return null;
+            }
+            text = fileText;
+        }
+        return text;
+    }
+
+    private boolean missingKeys() {
+        return gKey.getValue().isEmpty() ||
+                hKey.getValue().isEmpty() ||
+                aKey.getValue().isEmpty() ||
+                modN.getValue().isEmpty();
     }
 
     private void openPopup(String info) {

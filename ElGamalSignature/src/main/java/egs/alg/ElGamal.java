@@ -9,7 +9,7 @@ import static egs.alg.util.BigNoLongerNatural.one;
 public class ElGamal {
 
     public int bitLength;
-    public BigNoLongerNatural p, g, h; // public
+    public BigNoLongerNatural p, g, h; // public (p is modN)
     public BigNoLongerNatural a; // private
     private BigNoLongerNatural pMinOne;
 
@@ -45,7 +45,7 @@ public class ElGamal {
         return ret;
     }
 
-    boolean verify(byte[] data, BigNoLongerNatural[] key) {
+    public boolean verify(byte[] data, BigNoLongerNatural[] key) {
         md.update(data);
         BigNoLongerNatural digest = new BigNoLongerNatural(md.digest());
         BigNoLongerNatural res1 = g.modPow(digest, p);
@@ -53,11 +53,11 @@ public class ElGamal {
         return res1.equals(res2);
     }
 
-    void generateKeys() {
+    public void generateKeys() {
         generateKeys(256);
     }
 
-    void generateKeys(int bitLength) {
+    public void generateKeys(int bitLength) {
 
         p = BigNoLongerNatural.probablePrime(bitLength);
         pMinOne = p.subtract(one);
