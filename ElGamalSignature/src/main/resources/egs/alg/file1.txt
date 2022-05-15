@@ -1,1 +1,52 @@
-1234
+1. Podstawą zaliczenia laboratorium jest wykonanie w zespole
+laboratoryjnym jednego zadania ze wskazanego przez
+prowadzącego zestawu zadań.
+2. Przez zespół laboratoryjny rozumie się tu grupę złożoną z dwóch
+studentów.
+3. Wykonanie ćwiczenia obejmuje trzy aspekty. Pierwszy polega na
+napisaniu programu własnego autorstwa zgodnie z postawionym
+w ramach ćwiczenia zadaniem do zrealizowania, a następnie na
+zaprezentowaniu jego działania. Drugi stanowi odpowiedź ze
+znajomości zasad funkcjonowania tego programu, jego
+szczegółów implementacyjnych oraz powiązanych zagadnień
+teoretycznych. O formie odpowiedzi - ustnej lub pisemnej -
+decyduje prowadzący. Trzeci polega na opracowaniu
+sprawozdania zawierającego zasady działania algorytmu oraz
+programu.
+4. Program należy oddać do oceny najpóźniej na 6 spotkaniu.
+Oddanie programu do oceny w tym terminie lub terminie
+wcześniejszym uprawnia do uzyskania, jako maksymalnej, oceny
+bardzo dobrej. Przekroczenie terminu podstawowego skutkuje
+koniecznością oddania programu do oceny w jednym z terminów
+poprawkowych. Pierwszy termin poprawkowy przypada na
+kolejnych zajęciach po terminie podstawowym, przy czym ocena
+maksymalna ulega tu obniżeniu o jeden stopień, natomiast drugi
+termin poprawkowy przypada na dwa zajęcia po terminie
+podstawowym, a ocena maksymalna ulega tu obniżeniu o kolejny
+stopień. Przekroczenie drugiego terminu poprawkowego (ostatnie
+spotkanie w semestrze) pociąga za sobą niezaliczenie ćwiczenia,
+a tym samym całego laboratorium.
+5. Możliwość zaliczenia całego laboratorium upływa ostatecznie na
+ostatnich zajęciach w semestrze. Zaliczanie laboratorium podczas
+sesji egzaminacyjnej i przerwy międzysemestralnej nie jest
+przewidziane.
+6. Program musi być napisany samodzielnie i podlegać warunkom
+rozpowszechniania i licencji GNU - General Public License. Jeżeli
+autorzy zastrzegą inną formę rozpowszechniania lub
+licencjonowania swojego programu, nie będzie on oceniany.
+Ponadto kod programu powinien zawierać na początku
+odpowiednio uzupełniony nagłówek z informacją o autorach, jak
+również powinien być zaopatrzony w niezbędną ilość komentarzy
+objaśniających implementację poszczególnych etapów
+zastosowanego algorytmu.
+7. Program musi działać poprawnie i bezbłędnie oraz obowiązkowo
+spełniać wszystkie wymagania przekazane ustnie przez
+prowadzącego w trakcie zajęć. Niespełnienie tego kryterium
+skutkować będzie albo koniecznością dokonania odpowiednich
+poprawek, albo adekwatnym obniżeniem oceny za ćwiczenie. W
+uzasadnionych przypadkach prowadzący może zmniejszyć
+wymagania w odniesieniu do konkretnych zespołów.
+8. Oddanie do oceny programu stanowiącego plagiat karane będzie
+niezaliczneniem całego laboratorium.
+9. Korzystanie z biblioteki BigInteger przy realizacji zadania
+jest zabronione

@@ -1,44 +1,59 @@
 package egs.alg;
 
-//https://stackoverflow.com/questions/47025054/el-gamal-digital-signature-construction-inexplicably-failing
-//https://www.geeksforgeeks.org/elgamal-encryption-algorithm/
-
-
-
 import egs.alg.util.BigNoLongerNatural;
+
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import static egs.alg.util.BigNoLongerNatural.one;
+import static egs.alg.util.BigNoLongerNatural.zero;
 
 public class ElGamal {
 
+    public int bitLength;
     public BigNoLongerNatural p, g, h; // public
     public BigNoLongerNatural a; // private
-
     private BigNoLongerNatural pMinOne;
 
-    void sign(byte[] data) {
+    MessageDigest md;
 
-        // opis algorytmu:
-//            https://www.brainkart.com/article/The-El-Gamal-and-Digital-Signature-Algorithms_9757/
-//            http://web4.uwindsor.ca/users/e/erfani/main.nsf/0/6c0f05cb51a0e3de85256db900529639/$FILE/El%20Gamal%20and%20Digital%20Sign.pdf
-//        generowanie kluczy:
+    ElGamal() {
+        bitLength = 256;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            // ignore
+        }
+        generateKeys(bitLength);
+    }
+
+    // getRandom(bound) zwraca liczbę z przedziału 1 <= r < bound
+
+    //https://cryptography.fandom.com/wiki/ElGamal_signature_scheme
+    //https://stackoverflow.com/questions/47025054/el-gamal-digital-signature-construction-inexplicably-failing
+
+    public BigNoLongerNatural[] sign(byte[] data) {
+        md.update(data);
+        BigNoLongerNatural digest = new BigNoLongerNatural(md.digest());
         BigNoLongerNatural r = BigNoLongerNatural.getRandom(p); // 1 <= r <= p - 1
-//        a, x - liczby naturalne spełniające warunki:
-//            a < p, x < p
-//        obliczyć:
-//            y = a^x % p
-//        "The prime p should be chosen so that (p - 1) has a large prime factor, q" - cokolwiek to znaczy
-//        klucz prywatny : x
-//        klucz publiczny: y
-//        publiczne są też parametry p i a (ale jak???)
-//
-//        podpisywanie:
-//        wybrać przypadkowy int k taki że:
-//        0 < k < p - 1
-//        oraz gdc(k, p-1) = 1 (są względnie pierwsze)
-//        obliczyć:
-//        r = a^k mod p
-//        s = ??
-//        profit
+        while(!r.gcd(pMinOne).equals(one)) {
+            r = BigNoLongerNatural.getRandom(p);
+        }
+        BigNoLongerNatural rInv = r.modInverse(pMinOne);
+        BigNoLongerNatural[] ret = new BigNoLongerNatural[2];
 
+        ret[0] = g.modPow(r, p);
+        ret[1] = digest.subtract(a.multiply(ret[0])).multiply(rInv).mod(pMinOne);
+        return ret;
+    }
+
+    boolean verify(byte[] data, BigNoLongerNatural[] key) {
+        md.update(data);
+        BigNoLongerNatural digest = new BigNoLongerNatural(md.digest());
+        BigNoLongerNatural res1 = g.modPow(digest, p);
+        BigNoLongerNatural res2 = h.modPow(key[0], p).multiply(key[0].modPow(key[1], p)).mod(p);
+        return res1.equals(res2);
     }
 
     void generateKeys() {
@@ -46,13 +61,18 @@ public class ElGamal {
     }
 
     void generateKeys(int bitLength) {
-        int length = bitLength / 8;
 
-        p = BigNoLongerNatural.probablePrime(length);
-        pMinOne = p.subtract(BigNoLongerNatural.one);
+        p = BigNoLongerNatural.probablePrime(bitLength);
+        pMinOne = p.subtract(one);
         g = BigNoLongerNatural.getRandom(pMinOne); // 1 < g < p - 1
-        a = BigNoLongerNatural.getRandom(pMinOne); // 1 < a < p - 1
+        while(g.equals(one)) {
+            g = BigNoLongerNatural.getRandom(pMinOne);
+        }
 
+        a = BigNoLongerNatural.getRandom(pMinOne); // 1 < a < p - 1
+        while(a.equals(one)) {
+            a = BigNoLongerNatural.getRandom(pMinOne);
+        }
         h = g.modPow(a, p); // h = g^a mod p
     }
 }

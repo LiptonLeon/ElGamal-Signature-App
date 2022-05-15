@@ -123,21 +123,36 @@ public class BigNoLongerNatural {
     // NOTE: random functions always return positive
     //
     // getRandom(int) i getRandomOdd zwracają liczbę z zakresu
-    //      2^(length*8 - 1) <= r < 2^(length*8)
+    //      2^(bitLength) <= r < 2^(bitLength + 1)
     // natomiast getRandom(bound) zwraca liczbę z przedziału
-    //      0 <= r < bound
+    //      1 <= r < bound
 
-    public static BigNoLongerNatural getRandom(int length) {
-        byte[] new_mag = getExactLengthRandMag(length);
-        return new BigNoLongerNatural(new_mag);
+    public static BigNoLongerNatural getRandom(int bitLength) {
+        int length = (int) ceil(bitLength / 8.f);
+        byte[] newMag = getExactLengthRandMag(length);
+        newMag[0] = getRandByte(bitLength);
+        return new BigNoLongerNatural(newMag);
     }
 
-    public static BigNoLongerNatural getRandomOdd(int length) {
-        byte[] new_mag = getExactLengthRandMag(length);
-        while(new_mag[length-1] % 2 == 0) {
-            new_mag[length-1] = (byte) (rng.nextInt());
+    public static BigNoLongerNatural getRandomOdd(int bitLength) {
+        int length = (int) ceil(bitLength / 8.f);
+        byte[] newMag = getExactLengthRandMag(length);
+        while(newMag[length-1] % 2 == 0) {
+            newMag[length-1] = (byte) (rng.nextInt());
         }
-        return new BigNoLongerNatural(new_mag);
+        newMag[0] = getRandByte(bitLength);
+        return new BigNoLongerNatural(newMag);
+    }
+
+    private static byte getRandByte(int bitLength) {
+        int byteBound = 0;
+        for(int i = 0; i < bitLength % 8; i++) {
+            byteBound += 1 << i;
+        }
+        if(byteBound == 0) {
+            byteBound = 0xff;
+        }
+        return (byte) rng.nextInt(byteBound);
     }
 
     public static BigNoLongerNatural getRandom(BigNoLongerNatural bound) {
@@ -162,12 +177,12 @@ public class BigNoLongerNatural {
     }
 
     private static byte[] getExactLengthRandMag(int length) {
-        byte[] new_mag = new byte[length];
-        rng.nextBytes(new_mag);
-        while(new_mag[0] == 0) { // ensure that returned number does not have leading zeros
-            new_mag[0] = (byte) (rng.nextInt());
+        byte[] newMag = new byte[length];
+        rng.nextBytes(newMag);
+        while(newMag[0] == 0) { // ensure that returned number does not have leading zeros
+            newMag[0] = (byte) (rng.nextInt());
         }
-        return new_mag;
+        return newMag;
     }
 
     private static byte[] getRandMag(int length) {
@@ -186,24 +201,23 @@ public class BigNoLongerNatural {
     // ------------------------------ PRIMES ---------- //
 
     // https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/
-    public static BigNoLongerNatural probablePrime(int length) {
-        if(length <= 2) {
-            int rand = rng.nextInt(0xffff);
+    public static BigNoLongerNatural probablePrime(int bitLength) {
+        if(bitLength < 16) {
+            int byteBound = 0;
+            for(int i = 0; i < bitLength; i++) {
+                byteBound += 1 << i;
+            }
+            int rand = rng.nextInt(byteBound);
             while(!isIntPrime(rand)) {
-                rand = rng.nextInt(0xffff);
+                rand = rng.nextInt(byteBound);
             }
             return new BigNoLongerNatural(rand);
         }
-        BigNoLongerNatural p = getLowLevelPrime(length);
+        BigNoLongerNatural p = getLowLevelPrime(bitLength);
         while(!millerRabinPassed(p, 5)) {
-            p = getLowLevelPrime(length);
+            p = getLowLevelPrime(bitLength);
         }
         return p;
-    }
-
-    // todo
-    public BigNoLongerNatural nextProbablePrime() {
-        return null;
     }
 
     private static final int[] firstPrimes = {
@@ -214,11 +228,11 @@ public class BigNoLongerNatural {
             307, 311, 313, 317, 331, 337, 347, 349
     };
 
-    public static BigNoLongerNatural getLowLevelPrime(int length) {
+    public static BigNoLongerNatural getLowLevelPrime(int bitLength) {
         BigNoLongerNatural p = null;
         boolean generated = false;
         while (!generated) {
-            p = getRandomOdd(length);
+            p = getRandomOdd(bitLength);
             generated = true;
             for (int q : firstPrimes) {
                 if (p.mod(new BigNoLongerNatural(q)).equals(zero)) {
