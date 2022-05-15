@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
 import java.util.Random;
 
-import static egs.alg.util.BigNoLongerNatural.millerRabinPassed;
-import static egs.alg.util.BigNoLongerNatural.zero;
+import static egs.alg.util.BigNoLongerNatural.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BigNoLongerNaturalTest {
@@ -161,11 +160,12 @@ class BigNoLongerNaturalTest {
 
     @Test
     void probablePrimeTest() {
-        int length = 16;
-        // int bitLength = length * 16;
-        for(int i = 0; i < 1; i++) {
-            BigNoLongerNatural n = BigNoLongerNatural.probablePrime(length);
+        int length = 32;
+        int bitLength = length * 8;
+        for(int i = 0; i < 100; i++) {
+            BigNoLongerNatural n = BigNoLongerNatural.probablePrime(length); // 1,5s
             BigInteger in = new BigInteger(n.toString(), 16);
+//            BigInteger in = BigInteger.probablePrime(bitLength, rng); // 84 ms
             assertTrue(in.isProbablePrime(5));
         }
     }
@@ -176,6 +176,17 @@ class BigNoLongerNaturalTest {
         System.out.println(n1);
         for(int i = 1; i < 20; i++) {
             System.out.println(millerRabinPassed(n1, i));
+        }
+    }
+
+    @Test
+    void getRandomBoundTest() {
+        int length = 10;
+        for(int i = 0; i < 100000; i++) {
+            BigNoLongerNatural n1 = getRandom(length);
+            BigNoLongerNatural n2 = getRandom(n1);
+            System.out.printf("%s, %s\n", n1, n2);
+            assertTrue(n1.gt(n2));
         }
     }
 

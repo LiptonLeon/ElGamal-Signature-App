@@ -13,6 +13,7 @@ public class BigNoLongerNatural {
 
     private byte[] mag;
     private boolean sign; // true = +, false = -
+    // zero is positive
 
 
     // ------------------------------ CONSTRUCTORS ---------- //
@@ -62,6 +63,7 @@ public class BigNoLongerNatural {
         }
     }
 
+    // sets sign = true
     public BigNoLongerNatural(byte[] mag) {
         this.mag = deleteLeadingZeros(mag);
         sign = true;
@@ -119,14 +121,19 @@ public class BigNoLongerNatural {
 
     // ------------------------------ RANDOM ---------- //
     // NOTE: random functions always return positive
+    //
+    // getRandom(int) i getRandomOdd zwracają liczbę z zakresu
+    //      2^(length*8 - 1) <= r < 2^(length*8)
+    // natomiast getRandom(bound) zwraca liczbę z przedziału
+    //      0 <= r < bound
 
     public static BigNoLongerNatural getRandom(int length) {
-        byte[] new_mag = getRandMag(length);
+        byte[] new_mag = getExactLengthRandMag(length);
         return new BigNoLongerNatural(new_mag);
     }
 
     public static BigNoLongerNatural getRandomOdd(int length) {
-        byte[] new_mag = getRandMag(length);
+        byte[] new_mag = getExactLengthRandMag(length);
         while(new_mag[length-1] % 2 == 0) {
             new_mag[length-1] = (byte) (rng.nextInt());
         }
@@ -137,16 +144,16 @@ public class BigNoLongerNatural {
         byte[] new_mag = getRandMag(bound.mag.length);
         while(true) {
             for(int idx = 0; idx < bound.mag.length; idx++) {
-                int a = toInt(new_mag[idx]), b = toInt(bound.mag[idx]);
+                int a = toInt(new_mag[idx]), b = toInt(bound.mag[idx]); // a = 21, b = 00
                 if(a > b) {
                     if(b != 0) {
                         new_mag[idx] = (byte) (rng.nextInt(b));
                         return new BigNoLongerNatural(new_mag);
+                    } else {
+                        new_mag[idx] = 0;
                     }
                 } else if (a < b) {
                     return new BigNoLongerNatural(new_mag);
-                } else {
-                    new_mag[idx] = 0;
                 }
             }
             // wylosowano dokładnie taką samą liczbę jak n
@@ -154,13 +161,26 @@ public class BigNoLongerNatural {
         }
     }
 
-    private static byte[] getRandMag(int length) {
+    private static byte[] getExactLengthRandMag(int length) {
         byte[] new_mag = new byte[length];
         rng.nextBytes(new_mag);
         while(new_mag[0] == 0) { // ensure that returned number does not have leading zeros
             new_mag[0] = (byte) (rng.nextInt());
         }
         return new_mag;
+    }
+
+    private static byte[] getRandMag(int length) {
+        byte[] newMag = new byte[length];
+        rng.nextBytes(newMag);
+        while(true) { // check if new number != 0
+            for(int i = 0; i < newMag.length; i++) {
+                if(newMag[i] != 0)
+                    return newMag;
+            }
+            rng.nextBytes(newMag);
+        }
+
     }
 
     // ------------------------------ PRIMES ---------- //
@@ -222,18 +242,9 @@ public class BigNoLongerNatural {
         return true;
     }
 
-    // https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/
-    // https://www.geeksforgeeks.org/primality-test-set-3-miller-rabin/
-
-    // po zaimplementowaniu tego nadal nie mam pojęcia jak działa
-
-    // This function is called for all k trials.
-    // It returns false if n is composite and
-    // returns false if n is probably prime.
-    // d is an odd number such that d*2<sup>r</sup>
-    // = n-1 for some r >= 1
     private static boolean millerTest(BigNoLongerNatural n, BigNoLongerNatural d) {
-        // a = random(2, n-2)
+        // https://www.geeksforgeeks.org/how-to-generate-large-prime-numbers-for-rsa-algorithm/
+        // https://www.geeksforgeeks.org/primality-test-set-3-miller-rabin/
         BigNoLongerNatural a = getRandom( n.subtract(two) ); // a = random(0, n-2)
         while(!a.geq(two))                      // while a < 2
             a = getRandom( n.subtract(two) );   //     a = random(0, n-2)
@@ -244,11 +255,6 @@ public class BigNoLongerNatural {
         if (x.equals(one) || x.equals(nMinOne)) // if (x == 1 || x == n - 1)
             return true;
 
-        // Keep squaring x while one of the
-        // following doesn't happen
-        // (i) d does not reach n-1
-        // (ii) (x^2) % n is not 1
-        // (iii) (x^2) % n is not n-1
         while (!d.equals(nMinOne)) {
             x = x.multiply(x).mod(n);   // x = x^2 % n
             d = d.multiply(two);        // d *= 2
