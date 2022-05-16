@@ -173,6 +173,10 @@ public class EgsController implements Initializable {
                 hKey.setValue(scanner.nextLine());
                 aKey.setValue(scanner.nextLine());
                 modN.setValue(scanner.nextLine());
+                elGamal.g = new BigNoLongerNatural(gKey.getValue());
+                elGamal.h = new BigNoLongerNatural(hKey.getValue());
+                elGamal.a = new BigNoLongerNatural(aKey.getValue());
+                elGamal.p = new BigNoLongerNatural(modN.getValue());
             } catch (IOException e) {
                 openPopup("Bład odczytu\nkluczy!");
             }
