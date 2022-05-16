@@ -160,11 +160,12 @@ class BigNoLongerNaturalTest {
 
     @Test
     void probablePrimeTest() {
-        int bitLength = 32 * 8;
+        int bitLength = 256;
         for(int i = 0; i < 100; i++) {
-            BigNoLongerNatural n = BigNoLongerNatural.probablePrime(bitLength); // 1,5s
-            BigInteger in = new BigInteger(n.toString(), 16);
-//            BigInteger in = BigInteger.probablePrime(bitLength, rng); // 84 ms
+            System.out.println(i);
+//            BigNoLongerNatural n = BigNoLongerNatural.probablePrime(bitLength); // 1,5s
+//            BigInteger in = new BigInteger(n.toString(), 16);
+            BigInteger in = BigInteger.probablePrime(bitLength, rng); // 84 ms
             assertTrue(in.isProbablePrime(5));
         }
     }
