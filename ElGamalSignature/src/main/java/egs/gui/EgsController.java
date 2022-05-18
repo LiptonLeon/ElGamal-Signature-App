@@ -93,7 +93,7 @@ public class EgsController implements Initializable {
         aKey.setValue("");
         modN.setValue("");
 
-        //Extenstion filters for FileChoosers
+        //Extension filters for FileChoosers
         FileChooser.ExtensionFilter defaultExt = new FileChooser.ExtensionFilter("Inny plik (*.*)", "*.*");
         keyChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Plik z kluczami (*.key)", "*.key"));
         keyChooser.getExtensionFilters().add(defaultExt);
@@ -173,10 +173,6 @@ public class EgsController implements Initializable {
                 hKey.setValue(scanner.nextLine());
                 aKey.setValue(scanner.nextLine());
                 modN.setValue(scanner.nextLine());
-                elGamal.g = new BigNoLongerNatural(gKey.getValue());
-                elGamal.h = new BigNoLongerNatural(hKey.getValue());
-                elGamal.a = new BigNoLongerNatural(aKey.getValue());
-                elGamal.p = new BigNoLongerNatural(modN.getValue());
             } catch (IOException e) {
                 openPopup("Bład odczytu\nkluczy!");
             }
@@ -215,12 +211,21 @@ public class EgsController implements Initializable {
         byte[] text = getTextSource();
         if(text == null) return;
 
+        // Update keys in ElGamal
+        try {
+            setKeys();
+        } catch (NumberFormatException e) {
+            openPopup("Popsute klucze!");
+            return;
+        }
+
         // Sign text (corrupted keys may cause exception)
         try {
             BigNoLongerNatural[] signBig = elGamal.sign(text);
             sign.setValue(signBig[0].toString() + "\n" + signBig[1]);
             openPopup("Podpisano!");
         } catch (NullPointerException e) {
+            e.printStackTrace();
             openPopup("Popsute klucze!");
         }
     }
@@ -241,6 +246,14 @@ public class EgsController implements Initializable {
         // Try to get text, abort if fail
         byte[] text = getTextSource();
         if(text == null) return;
+
+        // Update keys in ElGamal
+        try {
+            setKeys();
+        } catch (NumberFormatException e) {
+            openPopup("Popsute klucze!");
+            return;
+        }
 
         // Check file with signature (corrupted keys or sign may cause exception)
         try {
@@ -282,6 +295,15 @@ public class EgsController implements Initializable {
                 hKey.getValue().isEmpty() ||
                 aKey.getValue().isEmpty() ||
                 modN.getValue().isEmpty();
+    }
+
+    // Set keys in ElGamal
+    private void setKeys() {
+        elGamal.g = new BigNoLongerNatural(gKey.getValue());
+        elGamal.h = new BigNoLongerNatural(hKey.getValue());
+        elGamal.a = new BigNoLongerNatural(aKey.getValue());
+        elGamal.p = new BigNoLongerNatural(modN.getValue());
+        elGamal.generatepMinOne();
     }
 
     // Create popup with a message

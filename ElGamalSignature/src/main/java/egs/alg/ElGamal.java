@@ -71,4 +71,8 @@ public class ElGamal {
         }
         h = g.modPow(a, p); // h = g^a mod p
     }
+
+    public void generatepMinOne() {
+        pMinOne = p.subtract(one);
+    }
 }
