@@ -200,9 +200,10 @@ public class EgsController implements Initializable {
         }
     }
 
+    // Sign
     public void onSignAction() {
         // Abort if keys are missing
-        if(missingKeys()) {
+        if(missingKeysSign()) {
             openPopup("Brak kluczy!");
             return;
         }
@@ -213,9 +214,23 @@ public class EgsController implements Initializable {
 
         // Update keys in ElGamal
         try {
-            setKeys();
+            setKeysSign();
         } catch (NumberFormatException e) {
             openPopup("Popsute klucze!");
+            return;
+        }
+
+        // Verify keys
+        if(!elGamal.verifyG()) {
+            openPopup("Błędny klucz g!");
+            return;
+        }
+        if(!elGamal.verifyH()) {
+            openPopup("Błędny klucz h!");
+            return;
+        }
+        if(!elGamal.verifyA()) {
+            openPopup("Błędny klucz a!");
             return;
         }
 
@@ -230,9 +245,10 @@ public class EgsController implements Initializable {
         }
     }
 
+    // Verify
     public void onVerifyAction() {
         // Abort if keys are missing
-        if(missingKeys()) {
+        if(missingKeysVerify()) {
             openPopup("Brak kluczy!");
             return;
         }
@@ -249,10 +265,22 @@ public class EgsController implements Initializable {
 
         // Update keys in ElGamal
         try {
-            setKeys();
+            setKeysVerify();
         } catch (NumberFormatException e) {
             openPopup("Popsute klucze!");
             return;
+        }
+
+        // Verify keys
+        if(!elGamal.verifyG()) {
+            openPopup("Błędny klucz g!");
+            return;
+        }
+        if(elGamal.a != null){
+            if(!elGamal.verifyH()) {
+                openPopup("Błędny klucz h!");
+                return;
+            }
         }
 
         // Check file with signature (corrupted keys or sign may cause exception)
@@ -290,20 +318,28 @@ public class EgsController implements Initializable {
     }
 
     // Check if keys are missing
-    private boolean missingKeys() {
+    private boolean missingKeysVerify() {
         return gKey.getValue().isEmpty() ||
                 hKey.getValue().isEmpty() ||
-                aKey.getValue().isEmpty() ||
+                modN.getValue().isEmpty();
+    }
+
+    private boolean missingKeysSign() {
+        return missingKeysVerify() ||
                 modN.getValue().isEmpty();
     }
 
     // Set keys in ElGamal
-    private void setKeys() {
+    private void setKeysVerify() {
         elGamal.g = new BigNoLongerNatural(gKey.getValue());
         elGamal.h = new BigNoLongerNatural(hKey.getValue());
-        elGamal.a = new BigNoLongerNatural(aKey.getValue());
         elGamal.p = new BigNoLongerNatural(modN.getValue());
         elGamal.generatepMinOne();
+    }
+
+    private void setKeysSign() {
+        setKeysVerify();
+        elGamal.a = new BigNoLongerNatural(aKey.getValue());
     }
 
     // Create popup with a message
