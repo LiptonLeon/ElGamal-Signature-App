@@ -8,6 +8,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class EgsApplication extends Application {
     @Override
@@ -18,7 +21,8 @@ public class EgsApplication extends Application {
         stage.setMinHeight(500);
         stage.setMinWidth(520);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(EgsApplication.class.getResource("app-view2.fxml"));
+        ResourceBundle bundle = ResourceBundle.getBundle("egs/gui/lang", new Locale("en", "EN"));
+        FXMLLoader fxmlLoader = new FXMLLoader(EgsApplication.class.getResource("app-view2.fxml"), bundle);
         Scene scene = new Scene(fxmlLoader.load());
         scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);

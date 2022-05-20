@@ -14,8 +14,9 @@
       <padding>
          <Insets top="7.0" />
       </padding>
-      <Button mnemonicParsing="false" onAction="#onAbout" prefHeight="21.0" prefWidth="35.0" styleClass="titleButton" text="🛈" />
       <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="38.0" prefWidth="184.0" style="-fx-font-size: 16px;" styleClass="labelSimple" text=" ElGamal Signature App" />
+      <Button fx:id="languageButton" layoutX="10.0" layoutY="11.0" mnemonicParsing="false" onAction="#onLanguage" prefHeight="37.0" prefWidth="41.0" styleClass="titleButton" text="PL" />
+      <Button mnemonicParsing="false" onAction="#onAbout" prefHeight="37.0" prefWidth="35.0" styleClass="titleButton" text="🛈" />
       <Separator opacity="0.0" prefHeight="0.0" prefWidth="236.0" HBox.hgrow="ALWAYS" />
       <Button alignment="CENTER" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onMinimizeClicked" prefHeight="32.0" prefWidth="32.0" styleClass="titleButton" text="_" textAlignment="CENTER">
          <font>
@@ -30,141 +31,119 @@
    </HBox>
    <HBox spacing="10.0" VBox.vgrow="ALWAYS">
       <VBox.margin>
-         <Insets top="5.0"/>
+         <Insets top="5.0" />
       </VBox.margin>
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
-         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderBox"
-               VBox.vgrow="ALWAYS">
-            <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-                   prefHeight="30.0" styleClass="labelGradient" text="Tekst" textAlignment="CENTER">
+         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="borderBox" VBox.vgrow="ALWAYS">
+            <Label fx:id="textTitle" alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" styleClass="labelGradient" text="%text" textAlignment="CENTER">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <TextArea fx:id="textField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                      prefHeight="254.0" VBox.vgrow="ALWAYS">
+            <TextArea fx:id="textField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="254.0" VBox.vgrow="ALWAYS">
                <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </TextArea>
          </VBox>
          <VBox spacing="10.0" styleClass="borderBox" VBox.vgrow="NEVER">
-            <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-                   prefHeight="30.0" styleClass="labelGradient" text="Plik" textAlignment="CENTER">
+            <Label fx:id="fileTitle" alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" styleClass="labelGradient" text="%file" textAlignment="CENTER">
                <font>
-                  <Font size="14.0"/>
+                  <Font size="14.0" />
                </font>
             </Label>
-            <HBox maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="32.0" prefWidth="300.0"
-                  spacing="10.0">
+            <HBox maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="32.0" prefWidth="300.0" spacing="10.0">
                <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0"/>
+                  <Insets bottom="10.0" left="10.0" right="10.0" />
                </VBox.margin>
-               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                       mnemonicParsing="false" onAction="#onTextLoad" prefHeight="30.0" prefWidth="70.0" text="Wczytaj">
+               <Button fx:id="loadButton3" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onTextLoad" prefHeight="30.0" prefWidth="70.0" text="%load">
                   <HBox.margin>
-                     <Insets right="-1.0"/>
+                     <Insets right="-1.0" />
                   </HBox.margin>
                   <font>
-                     <Font size="13.0"/>
+                     <Font size="13.0" />
                   </font>
                </Button>
-               <Label fx:id="textPath" contentDisplay="RIGHT" ellipsisString="" maxHeight="-Infinity"
-                      maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" prefWidth="168.0"
-                      styleClass="labelPath" text="nowy*" textAlignment="RIGHT" textOverrun="LEADING_ELLIPSIS"
-                      HBox.hgrow="ALWAYS">
+               <Label fx:id="textPath" contentDisplay="RIGHT" ellipsisString="" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" prefWidth="168.0" styleClass="labelPath" text="*" textAlignment="RIGHT" textOverrun="LEADING_ELLIPSIS" HBox.hgrow="ALWAYS">
                   <font>
-                     <Font name="Arial Narrow" size="12.0"/>
+                     <Font name="Arial Narrow" size="12.0" />
                   </font>
                </Label>
             </HBox>
          </VBox>
       </VBox>
       <VBox>
-         <Separator opacity="0.0" orientation="VERTICAL" prefHeight="200.0"/>
-         <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="149.0" prefWidth="107.0"
-               spacing="10.0" styleClass="borderBox">
-            <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                    mnemonicParsing="false" onAction="#onSignAction" prefHeight="30.0" prefWidth="92.0"
-                    text=" Podpisz →">
+         <Separator opacity="0.0" orientation="VERTICAL" prefHeight="200.0" />
+         <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="149.0" prefWidth="107.0" spacing="10.0" styleClass="borderBox">
+            <Button fx:id="signButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSignAction" prefHeight="30.0" prefWidth="92.0" text="%sign">
                <VBox.margin>
-                  <Insets/>
+                  <Insets />
                </VBox.margin>
                <font>
-                  <Font size="13.0"/>
+                  <Font size="13.0" />
                </font>
             </Button>
-            <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                    mnemonicParsing="false" onAction="#onVerifyAction" prefHeight="30.0" prefWidth="92.0"
-                    text="← Zweryfikuj">
+            <Button fx:id="verifyButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onVerifyAction" prefHeight="30.0" prefWidth="92.0" text="%verify">
                <VBox.margin>
-                  <Insets/>
+                  <Insets />
                </VBox.margin>
                <font>
-                  <Font size="13.0"/>
+                  <Font size="13.0" />
                </font>
             </Button>
-            <RadioButton fx:id="radioText" mnemonicParsing="false" prefHeight="19.0" prefWidth="70.0" selected="true"
-                         text="Tekst" textFill="WHITE">
+            <RadioButton fx:id="radioText" mnemonicParsing="false" prefHeight="19.0" prefWidth="70.0" selected="true" text="%text" textFill="WHITE">
                <font>
-                  <Font size="13.0"/>
+                  <Font size="13.0" />
                </font>
                <toggleGroup>
-                  <ToggleGroup fx:id="input"/>
+                  <ToggleGroup fx:id="input" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton mnemonicParsing="false" prefHeight="19.0" prefWidth="70.0" text="Plik"
-                         textFill="WHITE" toggleGroup="$input">
+            <RadioButton fx:id="radioFile" mnemonicParsing="false" prefHeight="19.0" prefWidth="70.0" text="%file" textFill="WHITE" toggleGroup="$input">
                <font>
-                  <Font size="13.0"/>
+                  <Font size="13.0" />
                </font>
             </RadioButton>
          </VBox>
-         <Separator opacity="0.0" orientation="VERTICAL" prefHeight="200.0"/>
+         <Separator opacity="0.0" orientation="VERTICAL" prefHeight="200.0" />
       </VBox>
       <VBox snapToPixel="false" styleClass="borderBox" HBox.hgrow="ALWAYS">
-         <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-                prefHeight="30.0" styleClass="labelGradient" text="Podpis cyfrowy" textAlignment="CENTER"/>
-         <TextArea fx:id="signField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                   prefHeight="261.0" wrapText="true" VBox.vgrow="ALWAYS">
+         <Label fx:id="signatureTitle" alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" styleClass="labelGradient" text="%signature" textAlignment="CENTER" />
+         <TextArea fx:id="signField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="261.0" wrapText="true" VBox.vgrow="ALWAYS">
             <VBox.margin>
-               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </VBox.margin>
          </TextArea>
-         <HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="32.0"
-               prefWidth="300.0" spacing="10.0">
+         <HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="32.0" prefWidth="300.0" spacing="10.0">
             <VBox.margin>
-               <Insets bottom="10.0" left="10.0" right="10.0"/>
+               <Insets bottom="10.0" left="10.0" right="10.0" />
             </VBox.margin>
-            <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                    mnemonicParsing="false" onAction="#onSignLoad" prefHeight="30.0" prefWidth="70.0" text="Wczytaj">
+            <Button fx:id="loadButton2" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSignLoad" prefHeight="30.0" prefWidth="70.0" text="%load">
                <HBox.margin>
-                  <Insets right="-1.0"/>
+                  <Insets right="-1.0" />
                </HBox.margin>
                <font>
-                  <Font size="13.0"/>
+                  <Font size="13.0" />
                </font>
             </Button>
-            <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-                    mnemonicParsing="false" onAction="#onSignSave" prefHeight="30.0" prefWidth="70.0" text="Zapisz">
+            <Button fx:id="saveButton2" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onSignSave" prefHeight="30.0" prefWidth="70.0" text="%save">
                <HBox.margin>
-                  <Insets/>
+                  <Insets />
                </HBox.margin>
                <font>
-                  <Font size="13.0"/>
+                  <Font size="13.0" />
                </font>
             </Button>
-            <Label fx:id="signPath" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0"
-                   prefWidth="220.0" text="nowy*" HBox.hgrow="ALWAYS">
+            <Label fx:id="signPath" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="30.0" prefWidth="220.0" text="*" HBox.hgrow="ALWAYS">
                <styleClass>
-                  <String fx:value="labelSimple"/>
-                  <String fx:value="labelPath"/>
+                  <String fx:value="labelSimple" />
+                  <String fx:value="labelPath" />
                </styleClass>
             </Label>
          </HBox>
       </VBox>
    </HBox>
-   <TitledPane alignment="CENTER" maxHeight="-Infinity" text="Klucze" textAlignment="CENTER">
+   <TitledPane fx:id="keysTitle" alignment="CENTER" maxHeight="-Infinity" text="%keys" textAlignment="CENTER">
       <VBox.margin>
          <Insets />
       </VBox.margin>
@@ -174,7 +153,7 @@
                <VBox.margin>
                   <Insets top="5.0" />
                </VBox.margin>
-               <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="Klucz publiczny g:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+               <Label fx:id="gLabel" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="%g" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                   <HBox.margin>
                      <Insets />
                   </HBox.margin>
@@ -192,7 +171,7 @@
                <VBox.margin>
                   <Insets />
                </VBox.margin>
-               <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="Klucz publiczny h:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+               <Label fx:id="hLabel" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="%h" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                   <HBox.margin>
                      <Insets />
                   </HBox.margin>
@@ -210,7 +189,7 @@
                <VBox.margin>
                   <Insets />
                </VBox.margin>
-               <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="Klucz prywatny a:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+               <Label fx:id="aLabel" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="%a" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                   <HBox.margin>
                      <Insets />
                   </HBox.margin>
@@ -228,7 +207,7 @@
                <VBox.margin>
                   <Insets />
                </VBox.margin>
-               <Label alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="Mod N:" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+               <Label fx:id="nLabel" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="140.0" styleClass="labelSimple" text="%n" textAlignment="CENTER" HBox.hgrow="ALWAYS">
                   <HBox.margin>
                      <Insets />
                   </HBox.margin>
@@ -249,7 +228,7 @@
                <VBox.margin>
                   <Insets />
                </VBox.margin>
-               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onKeyGenerate" prefHeight="30.0" prefWidth="120.0" text="Wygeneruj klucze">
+               <Button fx:id="generateButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onKeyGenerate" prefHeight="30.0" prefWidth="120.0" text="%generate">
                   <HBox.margin>
                      <Insets left="-1.0" />
                   </HBox.margin>
@@ -257,7 +236,7 @@
                      <Font size="13.0" />
                   </font>
                </Button>
-               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onKeyLoad" prefHeight="30.0" prefWidth="70.0" text="Wczytaj">
+               <Button fx:id="loadButton1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onKeyLoad" prefHeight="30.0" prefWidth="70.0" text="%load">
                   <HBox.margin>
                      <Insets left="-1.0" />
                   </HBox.margin>
@@ -265,7 +244,7 @@
                      <Font size="13.0" />
                   </font>
                </Button>
-               <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onKeySave" prefHeight="30.0" prefWidth="70.0" text="Zapisz">
+               <Button fx:id="saveButton1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onKeySave" prefHeight="30.0" prefWidth="70.0" text="%save">
                   <HBox.margin>
                      <Insets left="-1.0" />
                   </HBox.margin>
@@ -273,7 +252,7 @@
                      <Font size="13.0" />
                   </font>
                </Button>
-               <Label fx:id="keyPath" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="506.0" styleClass="labelPath" text="nowy*" HBox.hgrow="ALWAYS">
+               <Label fx:id="keyPath" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="506.0" styleClass="labelPath" text="*" HBox.hgrow="ALWAYS">
                   <HBox.margin>
                      <Insets />
                   </HBox.margin>

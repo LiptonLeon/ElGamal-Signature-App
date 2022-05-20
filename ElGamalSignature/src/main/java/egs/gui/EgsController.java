@@ -18,6 +18,7 @@ import javafx.stage.StageStyle;
 
 import java.io.*;
 import java.net.URL;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -35,15 +36,73 @@ public class EgsController implements Initializable {
     private final StringProperty sign = new SimpleStringProperty();
     private byte[] fileText;
 
-    //File choosers
+    // File choosers
     private final FileChooser keyChooser = new FileChooser();
     private final FileChooser signChooser = new FileChooser();
+
+    // Resources
+    private final Locale enLocale = new Locale("en", "EN");
+    private final Locale plLocale = new Locale("pl", "PL");
+    private final ResourceBundle enBundle = ResourceBundle.getBundle("egs/gui/lang", enLocale);
+    private final ResourceBundle plBundle = ResourceBundle.getBundle("egs/gui/lang", plLocale);
+    private boolean isPolish = false;
 
     @FXML
     private ToggleGroup input;
 
     @FXML
     private RadioButton radioText;
+
+    @FXML
+    private RadioButton radioFile;
+
+    @FXML
+    private Button loadButton1;
+
+    @FXML
+    private Button loadButton2;
+
+    @FXML
+    private Button loadButton3;
+
+    @FXML
+    private Button saveButton1;
+
+    @FXML
+    private Button saveButton2;
+
+    @FXML
+    private Button signButton;
+
+    @FXML
+    private Button verifyButton;
+
+    @FXML
+    private Button generateButton;
+
+    @FXML
+    private Label gLabel;
+
+    @FXML
+    private Label hLabel;
+
+    @FXML
+    private Label aLabel;
+
+    @FXML
+    private Label nLabel;
+
+    @FXML
+    private Label textTitle;
+
+    @FXML
+    private Label fileTitle;
+
+    @FXML
+    private Label signatureTitle;
+
+    @FXML
+    private TitledPane keysTitle;
 
     @FXML
     private Label textPath;
@@ -72,11 +131,15 @@ public class EgsController implements Initializable {
     @FXML
     private TextArea signField;
 
+    @FXML
+    private Button languageButton;
+
     private final FileChooser fileChooser = new FileChooser();
     private Stage stage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         // Bind TextFields with properties
         gKeyField.textProperty().bindBidirectional(gKey);
         hKeyField.textProperty().bindBidirectional(hKey);
@@ -99,6 +162,42 @@ public class EgsController implements Initializable {
         keyChooser.getExtensionFilters().add(defaultExt);
         signChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Plik z podpisem (*.sign)", "*.sign"));
         signChooser.getExtensionFilters().add(defaultExt);
+
+        setText();
+    }
+
+    // Set labels
+    private void setText() {
+        textTitle.setText(setString("text"));
+        fileTitle.setText(setString("file"));
+        signatureTitle.setText(setString("signature"));
+        keysTitle.setText(setString("keys"));
+        gLabel.setText(setString("g"));
+        hLabel.setText(setString("h"));
+        aLabel.setText(setString("a"));
+        nLabel.setText(setString("n"));
+        radioText.setText(setString("text"));
+        radioFile.setText(setString("file"));
+        loadButton1.setText(setString("load"));
+        loadButton2.setText(setString("load"));
+        loadButton3.setText(setString("load"));
+        saveButton1.setText(setString("save"));
+        saveButton2.setText(setString("save"));
+        generateButton.setText(setString("generate"));
+        signButton.setText(setString("sign") + " →");
+        verifyButton.setText("← " + setString("verify"));
+    }
+
+    @FXML
+    protected void onLanguage() {
+        if(isPolish) {
+            isPolish = false;
+            languageButton.setText("PL");
+        } else {
+            isPolish = true;
+            languageButton.setText("EN");
+        }
+        setText();
     }
 
     // FXResizeHelper can be initialized after passing stage to controller
@@ -122,11 +221,15 @@ public class EgsController implements Initializable {
         stage.setIconified(true);
     }
 
-    public void onTextLoad() throws IOException {
+    public void onTextLoad() {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            fileText = FileIO.getFileContentBytes(file.getPath());
-            textPath.setText(file.getPath());
+            try {
+                fileText = FileIO.getFileContentBytes(file.getPath());
+                textPath.setText(file.getPath());
+            } catch (IOException e) {
+                openPopup(setString("io.file_read_fail"));
+            }
         }
     }
 
@@ -137,7 +240,7 @@ public class EgsController implements Initializable {
                 sign.setValue(FileIO.getFileContentString(file.getPath()));
                 signPath.setText(file.getPath());
             } catch (IOException e) {
-                openPopup("Bład odczytu\npodpisu!");
+                openPopup(setString("io.sign_read_fail"));
             }
         }
     }
@@ -150,7 +253,7 @@ public class EgsController implements Initializable {
                 writer.write(sign.getValue());
                 writer.close();
             } catch (IOException e) {
-                openPopup("Bład zapisu\npodpisu!");
+                openPopup(setString("io.sign_save_fail"));
             }
             signPath.setText(file.getPath());
         }
@@ -174,7 +277,7 @@ public class EgsController implements Initializable {
                 aKey.setValue(scanner.nextLine());
                 modN.setValue(scanner.nextLine());
             } catch (IOException e) {
-                openPopup("Bład odczytu\nkluczy!");
+                openPopup(setString("io.key_read_fail"));
             }
             keyPath.setText(file.getPath());
         }
@@ -194,7 +297,7 @@ public class EgsController implements Initializable {
                 writer.write(modN.getValue());
                 writer.close();
             } catch (IOException e) {
-                openPopup("Bład zapisu\nkluczy!");
+                openPopup(setString("io.key_save_fail"));
             }
             keyPath.setText(file.getPath());
         }
@@ -204,7 +307,7 @@ public class EgsController implements Initializable {
     public void onSignAction() {
         // Abort if keys are missing
         if(missingKeysSign()) {
-            openPopup("Brak kluczy!");
+            openPopup(setString("action.keys_missing"));
             return;
         }
 
@@ -216,21 +319,21 @@ public class EgsController implements Initializable {
         try {
             setKeysSign();
         } catch (NumberFormatException e) {
-            openPopup("Popsute klucze!");
+            openPopup(setString("action.keys_broken"));
             return;
         }
 
         // Verify keys
         if(!elGamal.verifyG()) {
-            openPopup("Błędny klucz g!");
+            openPopup(setString("action.bad_g"));
             return;
         }
         if(!elGamal.verifyH()) {
-            openPopup("Błędny klucz h!");
+            openPopup(setString("action.bad_h"));
             return;
         }
         if(!elGamal.verifyA()) {
-            openPopup("Błędny klucz a!");
+            openPopup(setString("action.bad_a"));
             return;
         }
 
@@ -238,10 +341,10 @@ public class EgsController implements Initializable {
         try {
             BigNoLongerNatural[] signBig = elGamal.sign(text);
             sign.setValue(signBig[0].toString() + "\n" + signBig[1]);
-            openPopup("Podpisano!");
+            openPopup(setString("action.signed"));
         } catch (NullPointerException e) {
             e.printStackTrace();
-            openPopup("Popsute klucze!");
+            openPopup(setString("action.keys_broken"));
         }
     }
 
@@ -249,13 +352,13 @@ public class EgsController implements Initializable {
     public void onVerifyAction() {
         // Abort if keys are missing
         if(missingKeysVerify()) {
-            openPopup("Brak kluczy!");
+            openPopup(setString("action.keys_missing"));
             return;
         }
 
         // Abort when no signature
         if(sign.getValue().isEmpty()) {
-            openPopup("Brak podpisu!");
+            openPopup(setString("action.sign_missing"));
             return;
         }
 
@@ -267,18 +370,18 @@ public class EgsController implements Initializable {
         try {
             setKeysVerify();
         } catch (NumberFormatException e) {
-            openPopup("Popsute klucze!");
+            openPopup(setString("action.keys_broken"));
             return;
         }
 
         // Verify keys
         if(!elGamal.verifyG()) {
-            openPopup("Błędny klucz g!");
+            openPopup(setString("action.bad_g"));
             return;
         }
         if(elGamal.a != null){
             if(!elGamal.verifyH()) {
-                openPopup("Błędny klucz h!");
+                openPopup(setString("action.bad_h"));
                 return;
             }
         }
@@ -288,13 +391,13 @@ public class EgsController implements Initializable {
             String[] signSplit = sign.getValue().split("\n");
             BigNoLongerNatural[] signBig = {new BigNoLongerNatural(signSplit[0]), new BigNoLongerNatural(signSplit[1])};
             if (elGamal.verify(text, signBig))
-                openPopup("Podpis zgodny!");
+                openPopup(setString("action.valid"));
             else
-                openPopup("Podpis niezgodny!");
+                openPopup(setString("action.invalid"));
         } catch (NullPointerException e) {
-            openPopup("Popsute klucze!");
+            openPopup(setString("action.keys_broken"));
         } catch (NumberFormatException e) {
-            openPopup("Popsuty podpis!");
+            openPopup(setString("action.sign_broken"));
         }
     }
 
@@ -303,13 +406,13 @@ public class EgsController implements Initializable {
         byte[] text;
         if(input.getSelectedToggle() == radioText) {
             if(textField.getText().isEmpty()) {
-                openPopup("Brak tekstu!");
+                openPopup(setString("action.text_missing"));
                 return null;
             }
             text = GuiUtil.stringToByteArray(textField.getText());
         } else {
             if(fileText == null) {
-                openPopup("Brak pliku!");
+                openPopup(setString("action.file_missing"));
                 return null;
             }
             text = fileText;
@@ -362,6 +465,13 @@ public class EgsController implements Initializable {
     }
 
     public void onAbout() {
-        openPopup("Autorzy:\nKrystian Baraniecki\nJan Rubacha");
+        openPopup(setString("authors1") + "\n" + setString("authors2") + "\n" + setString("authors3"));
+    }
+
+    private String setString(String key) {
+        if(isPolish)
+            return plBundle.getString(key);
+        else
+            return enBundle.getString(key);
     }
 }
