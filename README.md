@@ -1,4 +1,4 @@
-# ElGamal-Signature-App
+# ElGamal Signature App
 
 ![screen_gui](https://user-images.githubusercontent.com/93220207/169597309-e1382d43-0509-4b71-b562-5b67e8214adf.png)
 
