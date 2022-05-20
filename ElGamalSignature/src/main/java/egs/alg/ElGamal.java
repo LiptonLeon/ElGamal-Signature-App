@@ -39,8 +39,8 @@ public class ElGamal {
         BigNoLongerNatural rInv = r.modInverse(pMinOne);
         BigNoLongerNatural[] ret = new BigNoLongerNatural[2];
 
-        ret[0] = g.modPow(r, p);
-        ret[1] = digest.subtract(a.multiply(ret[0])).multiply(rInv).mod(pMinOne);
+        ret[0] = g.modPow(r, p); // c1
+        ret[1] = digest.subtract(a.multiply(ret[0])).multiply(rInv).mod(pMinOne); // c2
         return ret;
     }
 
@@ -53,7 +53,7 @@ public class ElGamal {
     }
 
     public void generateKeys() {
-        generateKeys(256);
+        generateKeys(264);
     }
 
     public void generateKeys(int bitLength) {
@@ -70,5 +70,21 @@ public class ElGamal {
             a = BigNoLongerNatural.getRandom(pMinOne);
         }
         h = g.modPow(a, p); // h = g^a mod p
+    }
+
+    public void generatepMinOne() {
+        pMinOne = p.subtract(one);
+    }
+
+    public boolean verifyG() {
+        return !one.geq(g) && !g.geq(pMinOne);
+    }
+
+    public boolean verifyH() {
+        return h.equals(g.modPow(a, p));
+    }
+
+    public boolean verifyA() {
+        return !one.geq(a) && !a.geq(pMinOne);
     }
 }
