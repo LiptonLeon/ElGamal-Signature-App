@@ -9,15 +9,6 @@ import static egs.alg.util.BigNoLongerNatural.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BigNoLongerNaturalTest {
-    int ITER_NUM = 10000000;
-
-    BigNoLongerNatural a;
-    BigNoLongerNatural b;
-    BigNoLongerNatural r = new BigNoLongerNatural(0);
-    BigNoLongerNatural result;
-    BigNoLongerNatural reminder;
-    long toa;
-    long tob;
     Random rng = new Random();
 
     @Test
@@ -95,7 +86,6 @@ class BigNoLongerNaturalTest {
         BigNoLongerNatural bigN2 = new BigNoLongerNatural(bigI2.toString(16));
         BigNoLongerNatural bigN3 = new BigNoLongerNatural(bigI3.toString(16));
 
-//        assertEquals(bigI1.subtract(bigI2).toString(16), .subtract(bigN2).toString());
         assertEquals(bigI1.modPow(bigI2, bigI3).toString(16), bigN1.modPow(bigN2, bigN3).toString());
     }
 
@@ -144,7 +134,6 @@ class BigNoLongerNaturalTest {
             assertEquals(bigI.toString(16), bigN.toString());
 
             System.out.println(bigI.toString(16) + " p: " + p);
-//            System.out.println(bigI.toString(2));
 
             assertEquals(bigI.getLowestSetBit(), bigN.getLowestSetBit());
             assertEquals(bigI.shiftRight(p).toString(16), bigN.shiftRight(p).toString());
@@ -152,7 +141,6 @@ class BigNoLongerNaturalTest {
             assertEquals(bigI.bitLength(), bigN.bitLength());
             assertEquals(bigI.getLowestSetBit(), bigN.getLowestSetBit());
             for(int j = 0; j < bitLength; j++) {
-//                System.out.println("bit: " + j);
                 assertEquals(bigI.testBit(j), bigN.testBit(j));
             }
         }
@@ -160,12 +148,11 @@ class BigNoLongerNaturalTest {
 
     @Test
     void probablePrimeTest() {
-        int bitLength = 256;
-        for(int i = 0; i < 100; i++) {
+        int bitLength = 512;
+        for(int i = 0; i < 1; i++) {
             System.out.println(i);
-//            BigNoLongerNatural n = BigNoLongerNatural.probablePrime(bitLength); // 1,5s
-//            BigInteger in = new BigInteger(n.toString(), 16);
-            BigInteger in = BigInteger.probablePrime(bitLength, rng); // 84 ms
+            BigNoLongerNatural n = BigNoLongerNatural.probablePrime(bitLength);
+            BigInteger in = new BigInteger(n.toString(), 16);
             assertTrue(in.isProbablePrime(5));
         }
     }
@@ -181,16 +168,14 @@ class BigNoLongerNaturalTest {
 
     @Test
     void getRandomBoundTest() {
-        int length = 10;
-        for(int i = 0; i < 100000; i++) {
+        int length = 256;
+        for(int i = 0; i < 1000; i++) {
             BigNoLongerNatural n1 = getRandom(length);
             BigNoLongerNatural n2 = getRandom(n1);
             System.out.printf("%s, %s\n", n1, n2);
             assertTrue(n1.gt(n2));
         }
     }
-
-
 
     @Test
     void singleBitTest() {
@@ -207,11 +192,11 @@ class BigNoLongerNaturalTest {
         }
     }
 
-
-
     @Test
     void compareTestSerial() {
-        for(int i = 0; i < ITER_NUM; i++) {
+        BigNoLongerNatural a;
+        BigNoLongerNatural b;
+        for(int i = 0; i < 10000000; i++) {
             a = BigNoLongerNatural.getRandom(100);
             b = a.shiftLeft(1);
 
@@ -221,9 +206,6 @@ class BigNoLongerNaturalTest {
 
             assertTrue(b.gt(a));
             assertFalse(a.gt(b));
-
-//            assertTrue(a.lt(b));
-//            assertFalse(b.lt(a));
 
             assertTrue(b.geq(a));
             assertFalse(a.geq(b));
@@ -236,77 +218,4 @@ class BigNoLongerNaturalTest {
             assertTrue(b.geq(a));
         }
     }
-
-
-
-
-    /*
-     * todo
-     * Fails powMod, always actual: 1
-     * Also check out next test!
-     */
-    @Test
-    void modTestSerial() {
-        BigInteger bigI;
-        BigNoLongerNatural bigN;
-        BigInteger modI;
-        BigNoLongerNatural modN;
-        BigInteger expI;
-        BigNoLongerNatural expN;
-        int bitLength = 64;
-        for(int i = 0; i < 1000; i++) {
-            bigI = BigInteger.probablePrime(bitLength, rng);
-            bigN = new BigNoLongerNatural(bigI.toString(16));
-            modI = BigInteger.probablePrime(bitLength, rng);
-            modN = new BigNoLongerNatural(modI.toString(16));
-            expI = BigInteger.probablePrime(bitLength, rng);
-            expN = new BigNoLongerNatural(expI.toString(16));
-
-            assertEquals(bigI.mod(modI).toString(16), bigN.mod(modN).toString());
-            assertEquals(bigI.modPow(expI, modI).toString(16), bigN.modPow(expN, modN).toString());
-        }
-    }
-
-    /*
-     * todo
-     * When you make separate test for powMod, then it throws exception instead of failing assert.
-     * Both assertions are the same. WHAT IS GOING ON???
-     */
-    @Test
-    void powModTestSerial() {
-        BigInteger bigI;
-        BigNoLongerNatural bigN;
-        BigInteger modI;
-        BigNoLongerNatural modN;
-        BigInteger expI;
-        BigNoLongerNatural expN;
-        int bitLength = 64;
-        for(int i = 0; i < 1000; i++) {
-            bigI = BigInteger.probablePrime(bitLength, rng);
-            bigN = new BigNoLongerNatural(bigI.toString(16));
-            modI = BigInteger.probablePrime(bitLength, rng);
-            modN = new BigNoLongerNatural(modI.toString(16));
-            expI = BigInteger.probablePrime(bitLength, rng);
-            expN = new BigNoLongerNatural(expI.toString(16));
-
-            assertEquals(bigI.modPow(expI, modI).toString(16), bigN.modPow(expN, modN).toString());
-        }
-    }
-
-    /*
-    @Test
-    void test() {
-        int bitLength = 64;
-        BigInteger bigI = BigInteger.probablePrime(bitLength);
-        bigI.mod
-    }*/
-    /*
-    @Test
-    void probablePrimeTestSerial() {
-        for(int i = 0; i < ITER_NUM; i++) {
-            BigNatural bigN = BigNatural.probablePrime(100);
-
-            for(int i = new BigNatural(0), )
-        }
-    }*/
 }

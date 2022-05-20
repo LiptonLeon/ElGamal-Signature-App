@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URL;
-import java.security.NoSuchAlgorithmException;
 
 import static egs.alg.util.BigNoLongerNatural.one;
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,10 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class ElGamalTest {
     @Test
     void signVerifyTest() throws IOException {
-        URL uri = Main_terminal.class.getResource("file1.txt");
+        URL uri = ElGamal.class.getResource("file1.txt");
         String path = uri.getPath();
         byte[] data = FileIO.getFileContentBytes(path);
         ElGamal elGamal = new ElGamal();
+        elGamal.generateKeys();
 
         System.out.printf("publiczne\np: %s\ng: %s\nh: %s\n", elGamal.p, elGamal.g, elGamal.h);
         System.out.printf("prywatne\na: %s\n", elGamal.a);
@@ -37,7 +37,7 @@ class ElGamalTest {
 
     @Test
     void setKeysTest() throws IOException {
-        URL uri = Main_terminal.class.getResource("file1.txt");
+        URL uri = ElGamal.class.getResource("file1.txt");
         String path = uri.getPath();
         byte[] data = FileIO.getFileContentBytes(path);
         ElGamal elGamal = new ElGamal();
