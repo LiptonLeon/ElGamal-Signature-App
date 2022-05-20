@@ -6,4 +6,4 @@
 Aplikacja graficzna do tworzenia oraz weryfikacji podpisów cyfrowych wykorzystując algorytm ElGamal. Program został napisany w języku Java, przy czym interfejs graficzny został stworzony w JavaFX oraz wykorzystana jest własna implementacja BitInteger. Projekt na przedmiot Podstawy Kryptografii.
 
 ### English
-Graphical app that allows signing files and veryfing digital signatures using ElGamal algorythm. Program is written in Java, where graphical interface was created in JavaFX and our own implementation of BitInteger is being used. Project for subject Foundations of Cryptography.
+Graphical app that allows signing files and veryfing digital signatures using ElGamal algorithm. Program is written in Java, where graphical interface was created in JavaFX and our own implementation of BitInteger is being used. Project for subject Foundations of Cryptography.
