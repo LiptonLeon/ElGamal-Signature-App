@@ -11,8 +11,11 @@ https://www.youtube.com/watch?v=yG8YCLYccVo
     </configuration>
 </plugin>
 
-2. Then use command:
+2. Then use commands:
+javafx:compile
 javafx:jlink
 
 3. To run program in /target/image/bin use:
 ./java -m egs/egs.gui.EgsApplication
+
+If it doesn't work, then click randon stuff until it works xD
