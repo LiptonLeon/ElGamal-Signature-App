@@ -1,0 +1,18 @@
+YT tutorial I used:
+https://www.youtube.com/watch?v=yG8YCLYccVo
+
+1. Use this maven plugin:
+<plugin>
+    <groupId>org.openjfx</groupId>
+    <artifactId>javafx-maven-plugin</artifactId>
+    <version>0.0.3</version>
+    <configuration>
+        <mainClass>egs.gui.EgsApplication</mainClass>
+    </configuration>
+</plugin>
+
+2. Then use command:
+javafx:jlink
+
+3. To run program in /target/image/bin use:
+./java -m egs/egs.gui.EgsApplication
